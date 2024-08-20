@@ -1,12 +1,5 @@
 // remote imports
-import {
-  Application,
-  json,
-  urlencoded,
-  Request,
-  Response,
-  NextFunction,
-} from 'express';
+import { Application, json, urlencoded, Request, Response, NextFunction } from 'express';
 import http from 'http';
 import httpStatus from 'http-status-codes';
 import cookieSession from 'cookie-session';
@@ -17,10 +10,12 @@ import cors from 'cors';
 import { createClient } from 'redis';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { Socket, Server as socketServer } from 'socket.io';
+import 'express-async-errors';
 
 // local imports
-import { config } from './config';
-import { CustomError } from './shared/global/helpers/errorHandler';
+import { config } from '@utils/config';
+import { CustomError } from '@global/helpers/errorHandler';
+import { routes } from '@utils/routes';
 
 export class Server {
   private PORT = config.PORT;
@@ -37,8 +32,8 @@ export class Server {
   }
 
   private standardMiddlewares(app: Application): void {
-    app.use(json({ limit: '3mb' }));
-    app.use(urlencoded({ extended: false, limit: '3mb' }));
+    app.use(json({ limit: '10mb' }));
+    app.use(urlencoded({ extended: false, limit: '10mb' }));
     app.use(compression());
 
     // prettier-ignore
@@ -55,22 +50,19 @@ export class Server {
 
   private globalMiddlewares(app: Application): void {}
 
-  private routeMiddlewares(app: Application): void {}
+  private routeMiddlewares(app: Application): void {
+    routes(app);
+  }
 
   private errorHandler(app: Application): void {
     app.all('*', (req: Request, res: Response) => {
-      res
-        .status(httpStatus.NOT_FOUND)
-        .json({ message: `${req.originalUrl} not found` });
+      res.status(httpStatus.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
 
     app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-      if (error instanceof CustomError)
-        return res.status(error.statusCode).json(error.serializeError());
+      if (error instanceof CustomError) return res.status(error.statusCode).json(error.serializeError());
 
-      res
-        .status(520)
-        .json([{ message: 'Unknown error', status: 'error', statusCode: 520 }]);
+      res.status(520).json([{ message: 'Unknown error', status: 'error', statusCode: 520 }]);
     });
   }
 
@@ -80,9 +72,7 @@ export class Server {
     });
   }
 
-  private async createSocketConnection(
-    httpServer: http.Server
-  ): Promise<socketServer> {
+  private async createSocketConnection(httpServer: http.Server): Promise<socketServer> {
     const io: socketServer = new socketServer(httpServer, {
       cors: {
         origin: '*',
@@ -95,7 +85,7 @@ export class Server {
 
     await Promise.all([pubClient.connect(), subClient.connect()]);
 
-    console.log('connected to redis');
+    console.log('socket.io connected to server');
 
     io.adapter(createAdapter(pubClient, subClient));
 
@@ -107,8 +97,13 @@ export class Server {
       const httpServer = new http.Server(app);
       this.httpServer(httpServer);
       this.createSocketConnection(httpServer);
+      config.cloudinaryConfig();
     } catch (err) {
       console.error(err);
     }
   }
 }
+
+const hm = require('http');
+
+hm.crea;
