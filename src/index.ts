@@ -1,6 +1,6 @@
 import express from 'express';
-import { Database } from './db';
-import { Server } from './server';
+import { Database } from '@utils/db';
+import { Server } from '@utils/server';
 
 class App {
   static init() {
@@ -9,6 +9,7 @@ class App {
     const server = new Server(app);
 
     db.startDb();
+    db.startCache();
     server.start();
   }
 }

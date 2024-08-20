@@ -1,4 +1,5 @@
 import httpStatus, { StatusCodes } from 'http-status-codes';
+import { ValidationError } from 'joi';
 
 export abstract class CustomError extends Error {
   abstract statusCode: number;
@@ -16,7 +17,7 @@ export abstract class CustomError extends Error {
   }[];
 }
 
-class BadRequestError extends CustomError {
+export class BadRequestError extends CustomError {
   statusCode = httpStatus.BAD_REQUEST;
   status = 'error';
 
@@ -37,7 +38,7 @@ class BadRequestError extends CustomError {
   }
 }
 
-class NotAuthorizedError extends CustomError {
+export class NotAuthorizedError extends CustomError {
   statusCode = httpStatus.UNAUTHORIZED;
   status = 'error';
 
@@ -55,5 +56,23 @@ class NotAuthorizedError extends CustomError {
         statusCode: this.statusCode,
       },
     ];
+  }
+}
+
+export class JoiValidationFailed extends CustomError {
+  statusCode = httpStatus.BAD_REQUEST;
+  status = 'error';
+
+  constructor(public details: ValidationError) {
+    super(details.message);
+  }
+
+  serializeError() {
+    return this.details.details.map((error) => ({
+      message: error.message,
+      status: this.status,
+      statusCode: this.statusCode,
+      path: String(error.path),
+    }));
   }
 }
