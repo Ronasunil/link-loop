@@ -4,6 +4,8 @@ import { NotAuthorizedError } from '@global/helpers/errorHandler';
 import { AuthService } from '@services/db/authService';
 import { authDoc } from '../interfaces/auth.interface';
 import { userDoc } from '@utils/features/users/interface/user.interface';
+import mongoose from 'mongoose';
+import { authModel } from '../models/authModel';
 
 interface bodyWithLoginProps extends Request {
   body: {
@@ -19,7 +21,6 @@ class Login {
 
     // get auth and validating existence
     const auth = await AuthService.getAuthByEmailOrUsername(username || '', email || '');
-    console.log('auth', auth);
     if (!auth) throw new NotAuthorizedError('Invalid credentials');
 
     // get user and validating existence

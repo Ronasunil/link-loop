@@ -1,4 +1,6 @@
-class Helpers {
+import { addMinutes } from 'date-fns';
+
+export class Helpers {
   static generateRandomNum(len: number) {
     const numbers = '123456789';
     let res: string = '';
@@ -9,5 +11,12 @@ class Helpers {
     }
 
     return res;
+  }
+
+  static thirtyMinAddedTime() {
+    const now = new Date();
+    const futureTime = addMinutes(now, 30);
+
+    return futureTime.toUTCString();
   }
 }
