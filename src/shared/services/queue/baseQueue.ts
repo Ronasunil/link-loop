@@ -18,7 +18,12 @@ export abstract class BaseQueue {
       port: 6379,
     };
     this.queue = new Queue(queueName, {
-      connection: { host: config.REDIS_HOST, port: config.REDIS_PORT },
+      connection: {
+        host: config.REDIS_HOST,
+        port: config.REDIS_PORT,
+      },
+
+      // Add other queue options here if necessary
     });
 
     this.serverAdapter = new ExpressAdapter();

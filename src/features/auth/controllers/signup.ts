@@ -13,7 +13,6 @@ import { redisUserAttrs, userAttrs } from '@utils/features/users/interface/user.
 
 import { AuthWorker } from '@workers/authWorker';
 import { SignupWorker } from '@workers/signupWorker';
-import { config } from '@utils/config';
 
 interface bodyWithAuthProps extends Request {
   body: {
@@ -34,7 +33,8 @@ export class Signup {
     const { userName, email, password, avatarColor, avatarImage } = req.body;
 
     const user = await AuthService.getAuthByEmailOrUsername(userName, email);
-    if (user) throw new BadRequestError('Use another email address');
+
+    if (user) throw new BadRequestError('Use another email or username');
 
     const authId = Signup.prototype.createObjectId();
     const userId = Signup.prototype.createObjectId();
@@ -43,7 +43,6 @@ export class Signup {
 
     if (!result?.public_id) throw new BadRequestError('File upload: failed Try again.');
 
-    console.log(result);
     const authObj: authAttrs = {
       _id: userId,
       userName,
@@ -63,12 +62,11 @@ export class Signup {
 
     req.session = { token };
 
-    res.status(httpStatus.OK).json({ message: 'success', user: userData });
-
     // saving to db
     new AuthWorker().saveToDb(Signup.prototype.authData(req, authId));
-    // prettier-ignore
     new SignupWorker().saveToDb(Signup.prototype.userData(authId, userId, userName));
+
+    res.status(httpStatus.CREATED).json({ message: 'success', user: userData });
   }
 
   private redisUserData(authObj: authAttrs): redisUserAttrs {
@@ -120,7 +118,11 @@ export class Signup {
     return { userName, email, password, avatarColor, avatarImage, _id: authId.toString() };
   }
 
-  private userData(authId: mongoose.Types.ObjectId | string, userId: mongoose.Types.ObjectId | string, name: string): userAttrs {
+  private userData(
+    authId: mongoose.Types.ObjectId | string,
+    userId: mongoose.Types.ObjectId | string,
+    name: string
+  ): userAttrs {
     return { authId, _id: userId, name };
   }
 }

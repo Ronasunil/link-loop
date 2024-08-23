@@ -17,14 +17,11 @@ export const authSchema = Joi.object({
   password: Joi.string()
     .min(8)
     .required()
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-    )
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
     .messages({
       'string.base': 'Password must be string',
       'string.empty': 'Please fill this field',
-      'string.pattern.base':
-        ' Password must be 8-32 characters with at least one uppercase, lowercase, and special character',
+      'string.pattern.base': 'Password must be 8-32 characters with at least one uppercase, lowercase, and special character',
     }),
 
   confirmPassword: Joi.string().required().valid(Joi.ref('password')).messages({

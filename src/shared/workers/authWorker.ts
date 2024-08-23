@@ -15,6 +15,6 @@ export class AuthWorker {
 
   async createAuth(job: Job) {
     const data = job.data as authAttrs;
-    authModel.create(data);
+    await authModel.create(data);
   }
 }

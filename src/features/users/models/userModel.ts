@@ -26,14 +26,6 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 
-  passwordResetExpires: {
-    type: Date,
-  },
-
-  passwordResetToken: {
-    type: String,
-  },
-
   isBanned: {
     type: Boolean,
     default: false,

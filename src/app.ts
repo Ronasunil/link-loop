@@ -1,15 +1,13 @@
 // remote imports
 import { Application, json, urlencoded, Request, Response, NextFunction } from 'express';
-import http from 'http';
+
 import httpStatus from 'http-status-codes';
 import cookieSession from 'cookie-session';
 import compression from 'compression';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import cors from 'cors';
-import { createClient } from 'redis';
-import { createAdapter } from '@socket.io/redis-adapter';
-import { Socket, Server as socketServer } from 'socket.io';
+
 import 'express-async-errors';
 
 // local imports
@@ -17,10 +15,14 @@ import { config } from '@utils/config';
 import { CustomError } from '@global/helpers/errorHandler';
 import { routes } from '@utils/routes';
 
-export class Server {
-  private PORT = config.PORT;
+export class App {
+  constructor(public app: Application) {
+    this.start();
+  }
 
-  constructor(public app: Application) {}
+  get application(): Application {
+    return this.app;
+  }
 
   public start(): void {
     this.standardMiddlewares(this.app);
@@ -28,7 +30,6 @@ export class Server {
     this.globalMiddlewares(this.app);
     this.routeMiddlewares(this.app);
     this.errorHandler(this.app);
-    this.startServer(this.app);
   }
 
   private standardMiddlewares(app: Application): void {
@@ -61,49 +62,8 @@ export class Server {
 
     app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
       if (error instanceof CustomError) return res.status(error.statusCode).json(error.serializeError());
-
+      console.log(error);
       res.status(520).json([{ message: 'Unknown error', status: 'error', statusCode: 520 }]);
     });
   }
-
-  private httpServer(httpServer: http.Server): void {
-    httpServer.listen(this.PORT, () => {
-      console.log(`Server start listening on port ${this.PORT}`);
-    });
-  }
-
-  private async createSocketConnection(httpServer: http.Server): Promise<socketServer> {
-    const io: socketServer = new socketServer(httpServer, {
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-      },
-    });
-
-    const pubClient = createClient({ url: config.REDIS_CLIENT });
-    const subClient = pubClient.duplicate();
-
-    await Promise.all([pubClient.connect(), subClient.connect()]);
-
-    console.log('socket.io connected to server');
-
-    io.adapter(createAdapter(pubClient, subClient));
-
-    return io;
-  }
-
-  private async startServer(app: Application): Promise<void> {
-    try {
-      const httpServer = new http.Server(app);
-      this.httpServer(httpServer);
-      this.createSocketConnection(httpServer);
-      config.cloudinaryConfig();
-    } catch (err) {
-      console.error(err);
-    }
-  }
 }
-
-const hm = require('http');
-
-hm.crea;
