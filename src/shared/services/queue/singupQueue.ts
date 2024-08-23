@@ -8,7 +8,6 @@ export class SignupQueue extends BaseQueue {
 
   async addToQueue(data: any): Promise<void> {
     await this.queue.add(this.queue.name, data, { attempts: 3, delay: 1000 });
-    return;
   }
 
   processQueue(processFn: (job: Job) => void): void {
@@ -16,7 +15,6 @@ export class SignupQueue extends BaseQueue {
       this.queue.name,
       async (job: Job) => {
         processFn(job);
-        return;
       },
       {
         connection: this.connectionOptions,

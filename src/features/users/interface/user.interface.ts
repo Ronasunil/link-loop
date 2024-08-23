@@ -27,8 +27,6 @@ export interface userAttrs {
   name: string;
   dob?: Date | string;
   bgImage?: string;
-  passwordResetExpires?: Date | string;
-  passwordResetToken?: string;
   isBanned?: boolean;
   isDeleted?: boolean;
   isVerified?: boolean;
@@ -49,8 +47,6 @@ export interface userDoc extends mongoose.Document {
   avatarImage?: string;
   dob: Date | string;
   bgImage: string;
-  passwordResetExpires: Date | string;
-  passwordResetToken: string;
   isBanned: boolean;
   isDeleted: boolean;
   isVerified: boolean;

@@ -23,6 +23,15 @@ const authSchema = new mongoose.Schema(
       required: true,
     },
 
+    passwordResetExpires: {
+      type: Date,
+    },
+
+    passwordResetToken: {
+      type: String,
+      default: '',
+    },
+
     avatarColor: {
       type: String,
     },

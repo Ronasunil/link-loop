@@ -1,13 +1,13 @@
-import { Job, Worker } from 'bullmq';
+import { mailTo } from '@utils/features/auth/interfaces/auth.interface';
 import { BaseQueue } from './baseQueue';
+import { Job, Worker } from 'bullmq';
 
-export class AuthQueue extends BaseQueue {
+export class MailQueue extends BaseQueue {
   constructor(queueName: string) {
     super(queueName);
   }
-
-  async addToQueue(data: any): Promise<void> {
-    await this.queue.add(this.queue.name, data, { attempts: 3, delay: 1000 });
+  addToQueue(data: mailTo): void {
+    this.queue.add(this.queue.name, data, { attempts: 3, delay: 1000 });
   }
 
   processQueue(processFn: (job: Job) => void): void {

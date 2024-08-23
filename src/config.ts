@@ -8,7 +8,7 @@ class Config {
   public MONGO_URI: string | undefined;
   public NODE_ENV: string | undefined;
   public CLIENT_URL: string | undefined;
-  public PORT: Number | undefined;
+  public PORT: number | undefined;
   public REDIS_CLIENT: string | undefined;
   public CLOUD_NAME: string | undefined;
   public CLOUD_API_KEY: string | undefined;
@@ -16,6 +16,10 @@ class Config {
   public REDIS_HOST: string | undefined;
   public REDIS_PORT: number | undefined;
   public CLOUDINARY_BASE_URL: string | undefined;
+  public ETHEREAL_HOST: string | undefined;
+  public ETHEREAL_PORT: number | undefined;
+  public ETHEREAL_EMAIL: string | undefined;
+  public ETHEREAL_PASSWORD: string | undefined;
 
   constructor() {
     this.loadConfig();
@@ -34,6 +38,10 @@ class Config {
     this.REDIS_PORT = Number.parseInt(process.env.REDIS_PORT!);
     this.PORT = Number.parseInt(process.env.PORT!);
     this.CLOUDINARY_BASE_URL = process.env.CLOUDINARY_BASE_URL;
+    this.ETHEREAL_HOST = process.env.ETHEREAL_HOST;
+    this.ETHEREAL_PORT = Number.parseInt(process.env.ETHEREAL_PORT!);
+    this.ETHEREAL_EMAIL = process.env.ETHEREAL_EMAIL;
+    this.ETHEREAL_PASSWORD = process.env.ETHEREAL_PASSWORD;
   }
 
   private validateConfig() {
@@ -51,7 +59,6 @@ class Config {
   }
 
   public cloudinaryConfig() {
-    console.log(this.CLOUD_API_KEY);
     cloudinary.config({
       cloud_name: this.CLOUD_NAME,
       api_key: this.CLOUD_API_KEY,

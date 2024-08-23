@@ -5,6 +5,9 @@ import { Signup, signup } from '../controllers/signup';
 import { login } from '../controllers/login';
 import { curentUser } from '../controllers/currentUser';
 import { signout } from '../controllers/signOut';
+import { password } from '../controllers/password';
+import { forgotPasswordSchema } from '../schemas/forgotPasswordSchema';
+import { resetPasswordSchema } from '../schemas/resetPasswordSchema';
 class Routes {
   private Router: Router;
   constructor() {
@@ -16,6 +19,18 @@ class Routes {
     this.Router.post('/login', login.authenticate);
     this.Router.get('/currentUser', Middlewares.validateToken, Middlewares.currentUserCheck, curentUser.get);
     this.Router.delete('/signout', signout.delete);
+    this.Router.post(
+      '/forgotPassword',
+      Middlewares.validateToken,
+      Middlewares.currentUserCheck,
+      Middlewares.joiValidation(forgotPasswordSchema),
+      password.forgotPassword
+    );
+    this.Router.post(
+      '/resetPassword/:resetToken',
+      Middlewares.joiValidation(resetPasswordSchema),
+      password.resetPassword
+    );
     return this.Router;
   }
 }
