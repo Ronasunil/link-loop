@@ -1,12 +1,11 @@
-import { mailTo } from '@utils/features/auth/interfaces/auth.interface';
-import { BaseQueue } from './baseQueue';
 import { Job, Worker } from 'bullmq';
+import { BaseQueue } from './baseQueue';
 
-export class MailQueue extends BaseQueue {
+export class PostQueue extends BaseQueue {
   constructor(queueName: string) {
     super(queueName);
   }
-  async addToQueue(data: mailTo): Promise<void> {
+  async addToQueue(data: any): Promise<void> {
     await this.queue.add(this.queue.name, data, { attempts: 3, delay: 1000 });
   }
 
@@ -16,11 +15,11 @@ export class MailQueue extends BaseQueue {
     });
 
     worker.on('completed', (job: Job) => {
-      console.log(`job has completed ${job}`);
+      console.log(`post creation worker completed it's job ${job}`);
     });
 
     worker.on('failed', (_job, err) => {
-      console.error(`Job has failed with error ${err}`);
+      console.log(`post crreation worker failed, ${err}`);
     });
   }
 }

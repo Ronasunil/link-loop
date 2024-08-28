@@ -11,15 +11,9 @@ export class SignupQueue extends BaseQueue {
   }
 
   processQueue(processFn: (job: Job) => void): void {
-    const worker = new Worker(
-      this.queue.name,
-      async (job: Job) => {
-        processFn(job);
-      },
-      {
-        connection: this.connectionOptions,
-      }
-    );
+    const worker = new Worker(this.queue.name, async (job: Job) => processFn(job), {
+      connection: this.connectionOptions,
+    });
 
     worker.on('completed', (job: Job) => {
       console.log(`job has completed ${job}`);

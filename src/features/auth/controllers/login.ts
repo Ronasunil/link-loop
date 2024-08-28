@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
 import { NotAuthorizedError } from '@global/helpers/errorHandler';
 import { AuthService } from '@services/db/authService';
-import { authDoc } from '../interfaces/auth.interface';
+import { authDoc, authPayload } from '../interfaces/auth.interface';
 import { userDoc } from '@utils/features/users/interface/user.interface';
 import mongoose from 'mongoose';
 import { authModel } from '../models/authModel';
@@ -39,10 +39,10 @@ class Login {
     res.status(httpStatus.OK).json({ message: 'Login successfull', user });
   }
 
-  private getTokenPaylod(data: authDoc, userData: userDoc) {
-    const { userName, email, avatarImage } = data;
+  private getTokenPaylod(data: authDoc, userData: userDoc): authPayload {
+    const { userName, email, avatarImage, _id } = data;
 
-    return { userName, email, _id: userData._id, avatarImage };
+    return { userName, email, _id: userData._id, avatarImage, authId: _id };
   }
 }
 

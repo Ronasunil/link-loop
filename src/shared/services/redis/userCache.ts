@@ -16,7 +16,7 @@ export class UserCache extends BaseCache {
 
   async getUser(identifier: string | mongoose.Types.ObjectId): Promise<redisUserAttrs> {
     const user = await this.client.get(`user:${identifier}`);
-    console.log(identifier);
+
     if (!user) throw new BadRequestError(`Can't find user`);
 
     return JSON.parse(user);

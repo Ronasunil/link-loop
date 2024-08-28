@@ -20,6 +20,7 @@ class Config {
   public ETHEREAL_PORT: number | undefined;
   public ETHEREAL_EMAIL: string | undefined;
   public ETHEREAL_PASSWORD: string | undefined;
+  public PAGE_lIMIT: number | undefined;
 
   constructor() {
     this.loadConfig();
@@ -42,6 +43,7 @@ class Config {
     this.ETHEREAL_PORT = Number.parseInt(process.env.ETHEREAL_PORT!);
     this.ETHEREAL_EMAIL = process.env.ETHEREAL_EMAIL;
     this.ETHEREAL_PASSWORD = process.env.ETHEREAL_PASSWORD;
+    this.PAGE_lIMIT = Number.parseInt(process.env.PAGE_LIMIT!);
   }
 
   private validateConfig() {

@@ -7,6 +7,7 @@ import { createAdapter } from '@socket.io/redis-adapter';
 import { Socket, Server as socketServer } from 'socket.io';
 import { config } from './config';
 import { App } from './app';
+import { PostSocket } from './features/sockets/postSocket';
 
 export class Server {
   private PORT = config.PORT;
@@ -26,7 +27,8 @@ export class Server {
     try {
       const httpServer = new http.Server(app);
       this.httpServer(httpServer);
-      this.createSocketConnection(httpServer);
+      const io = await this.createSocketConnection(httpServer);
+      this.socketConnections(io);
       config.cloudinaryConfig();
     } catch (err) {
       console.error(err);
@@ -57,6 +59,12 @@ export class Server {
     io.adapter(createAdapter(pubClient, subClient));
 
     return io;
+  }
+
+  private socketConnections(server: socketServer) {
+    const postSocket = new PostSocket(server);
+
+    postSocket.listen();
   }
 }
 

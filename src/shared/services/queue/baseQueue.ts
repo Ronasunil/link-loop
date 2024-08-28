@@ -9,7 +9,7 @@ export abstract class BaseQueue {
   public serverAdapter: ExpressAdapter;
   public connectionOptions;
 
-  abstract addToQueue(data: any): void;
+  abstract addToQueue(data: any): Promise<void>;
   abstract processQueue(processFn: (job: Job) => void): void;
 
   constructor(queueName: string) {

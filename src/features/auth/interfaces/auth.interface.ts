@@ -26,6 +26,7 @@ export interface authPayload {
   userName: string;
   email: string;
   avatarImage: string;
+  authId: string | mongoose.Types.ObjectId;
 }
 
 export interface authDoc extends mongoose.Document {
