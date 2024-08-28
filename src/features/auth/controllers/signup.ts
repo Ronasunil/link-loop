@@ -13,6 +13,7 @@ import { redisUserAttrs, userAttrs } from '@utils/features/users/interface/user.
 
 import { AuthWorker } from '@workers/authWorker';
 import { SignupWorker } from '@workers/signupWorker';
+import { Helpers } from '@global/helpers/helpers';
 
 interface bodyWithAuthProps extends Request {
   body: {
@@ -25,10 +26,6 @@ interface bodyWithAuthProps extends Request {
 }
 
 export class Signup {
-  private createObjectId() {
-    return new mongoose.Types.ObjectId();
-  }
-
   public async createUser(req: bodyWithAuthProps, res: Response) {
     const { userName, email, password, avatarColor, avatarImage } = req.body;
 
@@ -36,8 +33,8 @@ export class Signup {
 
     if (user) throw new BadRequestError('Use another email or username');
 
-    const authId = Signup.prototype.createObjectId();
-    const userId = Signup.prototype.createObjectId();
+    const authId = Helpers.createObjectId();
+    const userId = Helpers.createObjectId();
 
     const result = await cloudinaryUploader.imageUpload(avatarImage, `${userId}`, true, true);
 
@@ -58,7 +55,7 @@ export class Signup {
     await userCache.addUser(userData);
 
     // token generation and adding to session
-    const token = AuthService.signToken({ userName, email, _id: userId, avatarImage });
+    const token = AuthService.signToken({ userName, email, _id: userId, avatarImage, authId });
 
     req.session = { token };
 
