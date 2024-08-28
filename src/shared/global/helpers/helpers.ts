@@ -1,4 +1,5 @@
 import { addMinutes } from 'date-fns';
+import mongoose from 'mongoose';
 
 export class Helpers {
   static generateRandomNum(len: number) {
@@ -18,5 +19,9 @@ export class Helpers {
     const futureTime = addMinutes(now, 30);
 
     return futureTime.toUTCString();
+  }
+
+  static createObjectId() {
+    return new mongoose.Types.ObjectId();
   }
 }

@@ -30,9 +30,9 @@ export class AuthService {
   }
 
   static signToken(authData: authPayload): string {
-    const { _id, userName, avatarImage, email } = authData;
+    const { _id, userName, avatarImage, email, authId } = authData;
 
-    return jwt.sign({ _id, userName, avatarImage, email }, config.JWT_SECRET!);
+    return jwt.sign({ _id, userName, avatarImage, email, authId }, config.JWT_SECRET!);
   }
 
   static async getAuthByEmail(email: string): Promise<authDoc | null> {
@@ -52,6 +52,9 @@ export class AuthService {
   }
 
   static async getAuthByResetToken(resetToken: string): Promise<authDoc | null> {
-    return await authModel.findOne({ passwordResetToken: resetToken, passwordResetExpires: { $gt: new Date().toUTCString() } });
+    return await authModel.findOne({
+      passwordResetToken: resetToken,
+      passwordResetExpires: { $gt: new Date().toUTCString() },
+    });
   }
 }

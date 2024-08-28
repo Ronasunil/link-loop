@@ -117,6 +117,7 @@
       "@services/*": ["./src/shared/services/*"],
       "@sockets/*": ["./src/shared/sockets/*"],
       "@workers/*": ["./src/shared/workers/*"],
+      "@post/*": ["./src/features/posts/*"],
       "@utils/*": ["./src/*"]
     }
   }
