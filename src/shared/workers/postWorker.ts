@@ -21,38 +21,40 @@ export class PostWorker {
   }
 
   deletePost(): void {
+    console.log('macho here it gets');
     this.postQueue.processQueue(this.deletePostFn);
   }
 
-  prepareQueueForCreation(data: postAttrs): this {
-    this.postQueue.addToQueue(data);
+  async prepareQueueForCreation(data: postAttrs): Promise<this> {
+    await this.postQueue.addToQueue(data);
     return this;
   }
 
-  prepareQueueForUpdation(data: postWithImageUpdationProps): this {
-    this.postQueue.addToQueue(data);
+  async prepareQueueForUpdation(data: postWithImageUpdationProps): Promise<this> {
+    await this.postQueue.addToQueue(data);
     return this;
   }
 
-  prepareQueueForDeletion(postId: string): this {
-    this.postQueue.addToQueue(postId);
+  async prepareQueueForDeletion(postId: string): Promise<this> {
+    console.log('hereee');
+    await this.postQueue.addToQueue(postId);
     return this;
   }
 
-  createPost(job: Job): void {
+  async createPost(job: Job): Promise<void> {
     const data = job.data as postAttrs;
-    postModel.create(data);
+    await postModel.create(data);
   }
 
   updatePostFn(postId: string): (job: Job) => void {
-    return function (job: Job) {
+    return async function (job: Job) {
       const data = job.data as postUpdationProps;
-      PostService.updatePostDb(postId, data);
+      await PostService.updatePostDb(postId, data);
     };
   }
 
-  deletePostFn(job: Job): void {
+  async deletePostFn(job: Job): Promise<void> {
     const postId = job.data as string;
-    PostService.deletePostsDb(postId);
+    await PostService.deletePostsDb(postId);
   }
 }
