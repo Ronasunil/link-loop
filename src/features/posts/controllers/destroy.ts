@@ -22,7 +22,8 @@ class Destroy {
     if (!userPosts.includes(`post:${postId}`)) throw new BadRequestError('Something went wrong');
 
     await postCache.deletePost(postId, authId);
-    new PostWorker().prepareQueueForDeletion(postId).deletePost();
+    const postWorker = await new PostWorker().prepareQueueForDeletion(postId);
+    postWorker.deletePost();
 
     res.status(httpStatus.NO_CONTENT).json({});
   }

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { Request } from 'express';
 
+import { reactions } from '@reaction/interfaces/reactionInterface';
+
 export interface postDoc extends mongoose.Document {
   _id: string | mongoose.Types.ObjectId;
   content: string;
@@ -37,14 +39,6 @@ export interface postAttrs {
   feelings: string;
   bgColor: string;
   createdAt: Date;
-}
-
-export interface reactions {
-  like: number;
-  sad: number;
-  laugh: number;
-  wow: number;
-  angry: number;
 }
 
 export enum privacyEnum {
@@ -87,14 +81,16 @@ export interface postUpdationProps {
 
 export interface postWithImageUpdationProps {
   content?: string;
-  bgColor: string;
-  feelings: string;
-  privacy: privacyEnum;
-  gifUrl: string;
-  profilePic: string;
+  bgColor?: string;
+  feelings?: string;
+  privacy?: privacyEnum;
+  gifUrl?: string;
+  profilePic?: string;
   image?: string;
-  imageId: string;
-  imageVersion: string;
+  imageId?: string;
+  imageVersion?: string;
+  reactions?: reactions;
+  totalReaction?: number;
 }
 
 export interface reqWithPostUpdationProps extends Request {

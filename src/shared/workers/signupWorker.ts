@@ -5,7 +5,7 @@ import { userModel } from '@utils/features/users/models/userModel';
 import { Job } from 'bullmq';
 
 export class SignupWorker {
-  signupQueue: SignupQueue = new SignupQueue('signupQueue');
+  private signupQueue: SignupQueue = new SignupQueue('signupQueue');
 
   constructor() {
     this.signupQueue.processQueue(this.createUser);

@@ -21,13 +21,15 @@ class Routes {
     this.Router.delete('/signout', signout.delete);
     this.Router.post(
       '/forgotPassword',
-      Middlewares.validateToken,
-      Middlewares.currentUserCheck,
+      // Middlewares.validateToken,
+      // Middlewares.currentUserCheck,
       Middlewares.joiValidation(forgotPasswordSchema),
       password.forgotPassword
     );
     this.Router.post(
       '/resetPassword/:resetToken',
+      // Middlewares.validateToken,
+      // Middlewares.currentUserCheck,
       Middlewares.joiValidation(resetPasswordSchema),
       password.resetPassword
     );

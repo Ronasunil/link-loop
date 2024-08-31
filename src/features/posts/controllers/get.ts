@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
 import { PostService } from '@services/db/postService';
 import { postCache } from '@services/redis/postCache';
-import { config } from '@utils/config';
+
+import { Helpers } from '@global/helpers/helpers';
 
 interface reqForGetAllPostsProps extends Request {
   query: {
@@ -36,15 +37,9 @@ interface reqForGetPostById extends Request {
 }
 
 class Get {
-  private paginate(pageNo: number): { skip: number; limit: number } {
-    const skip = (pageNo - 1) * config.PAGE_lIMIT!;
-    const limit = pageNo * config.PAGE_lIMIT!;
-
-    return { skip, limit };
-  }
   async posts(req: reqForGetAllPostsProps, res: Response) {
     const pageNo = Number.parseInt(req.query?.page || '1');
-    const { skip, limit } = Get.prototype.paginate(pageNo);
+    const { skip, limit } = Helpers.paginate(pageNo);
 
     const cachePosts = await postCache.getAllPost(skip, limit);
     const posts = cachePosts.length ? cachePosts : await PostService.getAllPostsDb(skip, limit);
@@ -54,7 +49,7 @@ class Get {
 
   async postsByAuthId(req: reqForGetPostByAuthId, res: Response) {
     const pageNo = Number.parseInt(req.query?.page || '1');
-    const { skip, limit } = Get.prototype.paginate(pageNo);
+    const { skip, limit } = Helpers.paginate(pageNo);
     const { authId } = req.params;
 
     const cachePosts = await postCache.getPostsByAuthId(authId);
@@ -65,7 +60,7 @@ class Get {
 
   async postsWithImageByAuthId(req: reqForGetPostImgByAuthId, res: Response) {
     const pageNo = Number.parseInt(req.query?.page || '1');
-    const { skip, limit } = Get.prototype.paginate(pageNo);
+    const { skip, limit } = Helpers.paginate(pageNo);
     const { authId } = req.params;
 
     const cachePosts = await postCache.getPostImagesByAuthId(authId, skip, limit);

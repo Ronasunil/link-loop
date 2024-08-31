@@ -107,6 +107,7 @@ export class Signup {
       },
       bgImage: '',
       dob: '',
+      profileImg: '',
     };
   }
 
@@ -120,7 +121,7 @@ export class Signup {
     userId: mongoose.Types.ObjectId | string,
     name: string
   ): userAttrs {
-    return { authId, _id: userId, name };
+    return { authId, _id: userId, name, profileImg: '' };
   }
 }
 

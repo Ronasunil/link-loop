@@ -18,6 +18,7 @@ export interface redisUserAttrs {
   isVerified: boolean;
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
+  profileImg: string;
 }
 
 export interface userAttrs {
@@ -32,6 +33,7 @@ export interface userAttrs {
   isVerified?: boolean;
   userSettings?: userSettings;
   socialMediaLinks?: socialMediaLinks;
+  profileImg: string;
 }
 
 export interface userDoc extends mongoose.Document {
@@ -52,6 +54,7 @@ export interface userDoc extends mongoose.Document {
   isVerified: boolean;
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
+  profileImg: string;
 }
 
 interface socialMediaLinks {

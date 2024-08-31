@@ -86,6 +86,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  profileImg: {
+    type: String,
+    default: '',
+  },
 });
 
 export const userModel = mongoose.model<userDoc>('User', userSchema);

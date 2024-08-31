@@ -30,9 +30,7 @@ export class PostService {
     await postModel.findByIdAndDelete(postId);
   }
 
-  static async updatePostDb(postId: string, data: postUpdationProps): Promise<postDoc | null> {
-    const post = await postModel.findByIdAndUpdate(postId, data, { new: true, runValidators: true });
-
-    return post;
+  static async updatePostDb(postId: string, data: postUpdationProps): Promise<void> {
+    await postModel.findByIdAndUpdate(postId, data, { new: true, runValidators: true });
   }
 }

@@ -76,3 +76,16 @@ export class JoiValidationFailed extends CustomError {
     }));
   }
 }
+
+export class NotFoundError extends CustomError {
+  statusCode = 404;
+  status = 'erorr';
+  constructor(msg: string) {
+    super(msg);
+    Object.setPrototypeOf(this, NotFoundError.prototype);
+  }
+
+  serializeError(): { message: string; status: string; statusCode: number; path?: string }[] {
+    return [{ message: this.message, status: this.status, statusCode: this.statusCode }];
+  }
+}

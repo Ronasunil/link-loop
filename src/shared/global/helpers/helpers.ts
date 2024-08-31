@@ -1,3 +1,4 @@
+import { config } from '@utils/config';
 import { addMinutes } from 'date-fns';
 import mongoose from 'mongoose';
 
@@ -23,5 +24,12 @@ export class Helpers {
 
   static createObjectId() {
     return new mongoose.Types.ObjectId();
+  }
+
+  static paginate(pageNo: number): { skip: number; limit: number } {
+    const skip = (pageNo - 1) * config.PAGE_lIMIT!;
+    const limit = pageNo * config.PAGE_lIMIT!;
+
+    return { skip, limit };
   }
 }

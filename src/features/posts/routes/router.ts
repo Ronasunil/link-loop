@@ -29,13 +29,14 @@ class Router {
     );
 
     this.router.get('/posts', Middlewares.validateToken, Middlewares.currentUserCheck, get.posts);
-    this.router.get('/posts/:authId', Middlewares.validateToken, Middlewares.currentUserCheck, get.postsByAuthId);
+    this.router.get('/posts/auth/:authId', Middlewares.validateToken, Middlewares.currentUserCheck, get.postsByAuthId);
     this.router.get(
       '/posts/:authId/image',
       Middlewares.validateToken,
       Middlewares.currentUserCheck,
       get.postsWithImageByAuthId
     );
+    this.router.get('/posts/:postId', Middlewares.validateToken, Middlewares.currentUserCheck, get.postsWithId);
 
     this.router.patch(
       '/posts/:postId',

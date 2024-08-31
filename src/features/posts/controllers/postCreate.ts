@@ -26,8 +26,8 @@ class Post {
     console.log(req.currentUser);
     postSocketIo.emit('add-post', postData);
     await postCache.addPost(postData);
-    new PostWorker().prepareQueueForCreation(postData).addPost();
-
+    const postWorker = await new PostWorker().prepareQueueForCreation(postData);
+    postWorker.addPost();
     res.status(httpStatus.OK).json({ message: 'Post created', post: postData });
   }
 
@@ -45,7 +45,8 @@ class Post {
 
     postSocketIo.emit('add-post', postData);
     await postCache.addPost(postData);
-    new PostWorker().prepareQueueForCreation(postData).addPost();
+    const postWorker = await new PostWorker().prepareQueueForCreation(postData);
+    postWorker.addPost();
 
     res.status(httpStatus.OK).json({ message: 'Post created', post: postData });
   }

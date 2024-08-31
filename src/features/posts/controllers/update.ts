@@ -16,20 +16,23 @@ class Update {
     const { postId } = req.params;
 
     const updateData = await Update.prototype.getUpdatedData(req);
-
+    console.log('updtedata', updateData);
     const updatedPost = await postCache.updatePost(postId, updateData);
     postSocketIo.emit('post-updated', updatedPost);
-    new PostWorker().prepareQueueForUpdation(updateData).updatePost(postId);
+    const postworker = await new PostWorker().prepareQueueForUpdation(updateData);
+    postworker.updatePost(postId);
 
     res.status(httpStatus.OK).json({ post: updatedPost });
   }
 
   private async getUpdatedData(req: reqWithPostUpdationProps): Promise<postWithImageUpdationProps> {
-    const { bgColor, content, feelings, gifUrl, privacy, profilePic, imageId, imageVersion, image } = req.body;
+    const { bgColor, content, feelings, gifUrl, privacy, profilePic, imageId, imageVersion, image, reactions } =
+      req.body;
     let data: postWithImageUpdationProps;
+    data = req.body;
+
     // post updation that already has image
-    if (imageId && imageVersion)
-      data = { bgColor, content, feelings, gifUrl, privacy, profilePic, imageId, imageVersion };
+    if (imageId && imageVersion) data = req.body;
 
     // post updation which includes updation of image
     if (image) {
@@ -38,14 +41,9 @@ class Update {
       if (!result?.public_id) throw new BadRequestError('File upload failed: Try again');
 
       data = {
-        bgColor,
-        content,
-        feelings,
-        gifUrl,
-        privacy,
-        profilePic,
         imageId: result.public_id,
         imageVersion: result.version.toString(),
+        ...req.body,
       };
     }
 
