@@ -21,8 +21,8 @@ export class PasswordChangedMailWorker {
     this.mailQueue.addToQueue({ ...data, body });
   }
 
-  sendMail(job: Job) {
+  async sendMail(job: Job) {
     const data = job.data as mailTo;
-    new SendMail(data).sendMail();
+    await new SendMail(data).sendMail();
   }
 }

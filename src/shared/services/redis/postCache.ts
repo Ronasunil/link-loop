@@ -1,12 +1,7 @@
-import {
-  postAttrs,
-  postDoc,
-  postUpdationProps,
-  postWithImageUpdationProps,
-} from '@utils/features/posts/interfaces/postInterfaces';
+import { postAttrs, postWithImageUpdationProps } from '@utils/features/posts/interfaces/postInterfaces';
 import { BaseCache } from './baseCache';
 import mongoose from 'mongoose';
-import { BadRequestError } from '@global/helpers/errorHandler';
+import { BadRequestError, NotFoundError } from '@global/helpers/errorHandler';
 
 class PostCache extends BaseCache {
   constructor() {
@@ -89,7 +84,8 @@ class PostCache extends BaseCache {
   }
 
   async deletePost(postId: string, authId: string): Promise<void> {
-    await this.client.del(postId);
+    const x = await this.client.del(`post:${postId}`);
+    console.log('xxx', x);
     await this.client.srem(`auth:${authId}`, `post:${postId}`);
     await this.client.srem('postsIds', `post:${postId}`);
   }
@@ -103,6 +99,12 @@ class PostCache extends BaseCache {
     await this.client.set(`post:${postId}`, updatedData);
 
     return JSON.parse(updatedData) as postAttrs;
+  }
+
+  async getTotalReaction(postId: string): Promise<number> {
+    const post = await this.getPost(postId);
+    if (!post) throw new NotFoundError(`Post based on this id:${postId} is not avialable`);
+    return Number.parseInt(`${post.totalReaction}`);
   }
 }
 

@@ -22,8 +22,8 @@ export class ResetPasswordMailWorker {
     this.mailQueue.addToQueue({ ...data, body });
   }
 
-  sendResetMail(job: Job) {
+  async sendResetMail(job: Job) {
     const data = job.data as mailTo;
-    new SendMail(data).sendMail();
+    await new SendMail(data).sendMail();
   }
 }

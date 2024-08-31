@@ -10,7 +10,7 @@ export abstract class BaseQueue {
   public connectionOptions;
 
   abstract addToQueue(data: any): Promise<void>;
-  abstract processQueue(processFn: (job: Job) => void): void;
+  abstract processQueue(processFn: (job: Job) => Promise<void>): void;
 
   constructor(queueName: string) {
     this.connectionOptions = {
@@ -22,15 +22,18 @@ export abstract class BaseQueue {
         host: config.REDIS_HOST,
         port: config.REDIS_PORT,
       },
-
-      // Add other queue options here if necessary
     });
 
     this.serverAdapter = new ExpressAdapter();
+    this.serverAdapter.setBasePath('/developer/queue');
 
     createBullBoard({
       queues: [new BullAdapter(this.queue)],
       serverAdapter: this.serverAdapter,
     });
+  }
+
+  routes() {
+    return this.serverAdapter.getRouter();
   }
 }

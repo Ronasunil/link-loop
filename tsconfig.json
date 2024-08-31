@@ -118,6 +118,7 @@
       "@sockets/*": ["./src/shared/sockets/*"],
       "@workers/*": ["./src/shared/workers/*"],
       "@post/*": ["./src/features/posts/*"],
+      "@reaction/*": ["./src/features/reactions/*"],
       "@utils/*": ["./src/*"]
     }
   }
