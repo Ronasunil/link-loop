@@ -12,7 +12,6 @@ export interface postDoc extends mongoose.Document {
   authId: string;
   totalComments: number;
   reactions: reactions;
-  comments: comments[];
   gifUrl: string;
   privacy: privacyEnum;
   imageId: string;
@@ -31,7 +30,6 @@ export interface postAttrs {
   authId: string | mongoose.Types.ObjectId;
   totalComments: number;
   reactions: reactions;
-  comments: comments[];
   gifUrl: string;
   privacy: privacyEnum;
   imageId: string;
@@ -91,6 +89,7 @@ export interface postWithImageUpdationProps {
   imageVersion?: string;
   reactions?: reactions;
   totalReaction?: number;
+  totalComments?: number;
 }
 
 export interface reqWithPostUpdationProps extends Request {
