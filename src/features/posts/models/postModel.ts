@@ -29,15 +29,6 @@ const postSchema = new mongoose.Schema({
     default: 0,
   },
 
-  comments: [
-    {
-      authId: { type: mongoose.Types.ObjectId, ref: 'Auth' },
-      postId: { type: mongoose.Types.ObjectId, ref: 'Post' },
-      avatarImage: String,
-      email: String,
-    },
-  ],
-
   reactions: {
     like: { type: Number, default: 0 },
     sad: { type: Number, default: 0 },

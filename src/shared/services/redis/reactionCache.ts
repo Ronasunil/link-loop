@@ -15,9 +15,28 @@ export class ReactionCache extends BaseCache {
   }
 
   async getReactionByPostId(postId: string, skip: number, limit: number): Promise<reactionAttrs[]> {
-    const reactionObj = await this.client.hgetall(`reaction:${postId}`);
-    const reactions = Object.values(reactionObj).map((reaction) => JSON.parse(reaction) as reactionAttrs);
-    return reactions.slice(skip, limit);
+    const reactions: reactionAttrs[] = [];
+    let cursor = '0'; // Start cursor for HSCAN
+
+    // Use HSCAN to iterate through the hash
+    do {
+      const [newCursor, items] = await this.client.hscan(`reaction:${postId}`, cursor);
+      cursor = newCursor;
+
+      for (let i = 0; i < items.length; i += 2) {
+        if (skip > 0) {
+          skip--;
+          continue;
+        }
+
+        if (reactions.length < limit) {
+          const value = JSON.parse(items[i + 1]) as reactionAttrs;
+          reactions.push(value);
+        } else return reactions;
+      }
+    } while (cursor !== '0');
+
+    return reactions;
   }
 
   async createReaction(data: reactionAttrs): Promise<void> {

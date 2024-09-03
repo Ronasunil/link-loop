@@ -27,15 +27,6 @@ export class SendMail {
       },
     });
 
-    // const transporter = nodemailer.createTransport({
-    //     host: 'smtp.ethereal.email',
-    //     port: 587,
-    //     auth: {
-    //       user: 'devonte.skiles13@ethereal.email',
-    //       pass: '6fQMsaaJsq8dxPeTkw',
-    //     },
-    //   });
-
     transporter.sendMail(this.mailOptions).catch((err) => {
       console.log(err);
       throw new BadRequestError('Something went wrong');
