@@ -8,6 +8,7 @@ import { Socket, Server as socketServer } from 'socket.io';
 import { config } from './config';
 import { App } from './app';
 import { PostSocket } from './features/sockets/postSocket';
+import { FollowerSocket } from './features/sockets/followerSocket';
 
 export class Server {
   private PORT = config.PORT;
@@ -63,8 +64,10 @@ export class Server {
 
   private socketConnections(server: socketServer) {
     const postSocket = new PostSocket(server);
+    const followerScoket = new FollowerSocket(server);
 
     postSocket.listen();
+    followerScoket.listen();
   }
 }
 
