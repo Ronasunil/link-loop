@@ -107,7 +107,14 @@ export class Signup {
       },
       bgImage: '',
       dob: '',
-      profileImg: '',
+      profilePic: '',
+      followersCount: 0,
+      followeeCount: 0,
+      bgImageId: '',
+      bgImageVersion: '',
+      blocked: [],
+      blockedBy: [],
+      totalPost: 0,
     };
   }
 
@@ -121,7 +128,7 @@ export class Signup {
     userId: mongoose.Types.ObjectId | string,
     name: string
   ): userAttrs {
-    return { authId, _id: userId, name, profileImg: '' };
+    return { authId, _id: userId, name, profileImg: '', totalPost: 0 };
   }
 }
 
