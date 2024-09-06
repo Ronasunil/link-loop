@@ -53,6 +53,7 @@ class Get {
     const { authId } = req.params;
 
     const cachePosts = await postCache.getPostsByAuthId(authId);
+    console.log(cachePosts, 'pop', authId);
     const posts = cachePosts.length ? cachePosts : await PostService.getPostbyAuthIdDb(authId, skip, limit);
 
     res.status(httpStatus.OK).json({ posts });
@@ -64,6 +65,7 @@ class Get {
     const { authId } = req.params;
 
     const cachePosts = await postCache.getPostImagesByAuthId(authId, skip, limit);
+
     const posts = cachePosts.length ? cachePosts : await PostService.getPostImagesByAuthIdDb(authId, skip, limit);
 
     res.status(httpStatus.OK).json({ posts });

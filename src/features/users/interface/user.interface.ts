@@ -18,7 +18,41 @@ export interface redisUserAttrs {
   isVerified: boolean;
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
-  profileImg: string;
+  profilePic: string;
+  followersCount: number;
+  followeeCount: number;
+  bgImageVersion: string;
+  bgImageId: string;
+  blocked: string[];
+  blockedBy: string[];
+  totalPost: number;
+}
+
+export interface redisUserUpdationProp {
+  role?: string;
+  name?: string;
+  userName?: string;
+  email?: string;
+  password?: string;
+  avatarColor?: string;
+  avatarImage?: string;
+  dob?: Date | string;
+  bgImage?: string;
+  passwordResetExpires?: Date | string;
+  passwordResetToken?: string;
+  isBanned?: boolean;
+  isDeleted?: boolean;
+  isVerified?: boolean;
+  userSettings?: userSettings;
+  socialMediaLinks?: socialMediaLinks;
+  profileImg?: string;
+  followersCount?: number;
+  followeeCount?: number;
+  bgImageVersion?: string;
+  bgImageId?: string;
+  blocked?: string[];
+  blockedBy?: string[];
+  totalPost?: number;
 }
 
 export interface userAttrs {
@@ -34,6 +68,9 @@ export interface userAttrs {
   userSettings?: userSettings;
   socialMediaLinks?: socialMediaLinks;
   profileImg: string;
+  followersCount?: number;
+  followeeCount?: number;
+  totalPost?: number;
 }
 
 export interface userDoc extends mongoose.Document {
@@ -55,6 +92,13 @@ export interface userDoc extends mongoose.Document {
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
   profileImg: string;
+  followersCount: number;
+  followeeCount: number;
+  bgImageVersion: string;
+  bgImageId: string;
+  blocked: mongoose.Types.ObjectId[];
+  blockedBy: mongoose.Types.ObjectId[];
+  totalPost: number;
 }
 
 interface socialMediaLinks {

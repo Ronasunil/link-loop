@@ -26,6 +26,16 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 
+  followersCount: {
+    type: Number,
+    default: 0,
+  },
+
+  followeeCount: {
+    type: Number,
+    default: 0,
+  },
+
   isBanned: {
     type: Boolean,
     default: false,
@@ -90,6 +100,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+
+  bgImageVersion: {
+    type: String,
+    default: '',
+  },
+
+  bgImageId: {
+    type: String,
+    default: '',
+  },
+
+  blocked: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  blockedBy: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
 });
 
 export const userModel = mongoose.model<userDoc>('User', userSchema);
