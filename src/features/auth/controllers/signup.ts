@@ -82,6 +82,7 @@ export class Signup {
           onFollow: true,
           onLike: true,
           onMessage: true,
+          onComment: true,
         },
 
         postSettings: {
