@@ -23,10 +23,11 @@ class Reaction {
   }
 
   private getReactionData(req: reqForAddReactions, _id: string | mongoose.Types.ObjectId): reactionAttrs {
-    const { postId, profilePic, reactionType, userName } = req.body;
+    const { postId, profilePic, reactionType, userName, userTo } = req.body;
     const authId = req.currentUser!.authId;
+    const userFrom = req.currentUser!._id;
 
-    return { postId, profilePic, reactionType, userName, _id, createdAt: new Date(), authId };
+    return { postId, profilePic, reactionType, userName, _id, createdAt: new Date(), authId, userFrom, userTo };
   }
 }
 

@@ -122,5 +122,6 @@ interface userSettings {
     onFollow: boolean;
     onMessage: boolean;
     onLike: boolean;
+    onComment: boolean;
   };
 }

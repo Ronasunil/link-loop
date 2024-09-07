@@ -7,6 +7,8 @@ export interface reactionAttrs {
   userName: string;
   postId: string | mongoose.Types.ObjectId;
   authId: string | mongoose.Types.ObjectId;
+  userFrom: string | mongoose.Types.ObjectId;
+  userTo: string | mongoose.Types.ObjectId;
   reactionType: reactionType;
   createdAt: Date;
 }
@@ -17,6 +19,8 @@ export interface reactionDoc extends mongoose.Document {
   userName: string;
   postId: string | mongoose.Types.ObjectId;
   authId: string | mongoose.Types.ObjectId;
+  userFrom: string | mongoose.Types.ObjectId;
+  userTo: string | mongoose.Types.ObjectId;
   reactionType: reactionType;
   createdAt: Date;
 }
@@ -42,6 +46,7 @@ export interface reactionProp {
   userName: string;
   postId: string;
   reactionType: reactionType;
+  userTo: string;
 }
 
 export interface reqForAddReactions extends Request {

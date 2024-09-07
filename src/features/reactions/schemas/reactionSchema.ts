@@ -8,6 +8,9 @@ export const addReactionSchema = Joi.object({
   postId: Joi.string().required().messages({
     'any.required': 'postId is missing',
   }),
+  userTo: Joi.string().required().messages({
+    'any.required': 'userTo is missing',
+  }),
 
   reactionType: Joi.string().required().valid('like', 'sad', 'laugh', 'wow', 'angry'),
 });

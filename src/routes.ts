@@ -4,6 +4,7 @@ import { postRoutes } from '@post/routes/router';
 import { reactionRouter } from '@reaction/routes/router';
 import { commentRouter } from '@comment/routes/router';
 import { followerRouter } from '@follower/routes/router';
+import { notificationRouter } from '@notification/routes/router';
 
 export const routes = function (app: Application) {
   const baseURL = '/api/v1';
@@ -12,4 +13,5 @@ export const routes = function (app: Application) {
   app.use(`${baseURL}`, reactionRouter.routes());
   app.use(`${baseURL}`, commentRouter.routes());
   app.use(`${baseURL}`, followerRouter.routes());
+  app.use(`${baseURL}`, notificationRouter.routes());
 };
