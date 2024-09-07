@@ -1,5 +1,9 @@
-import { dbFolloweAttr } from '@follower/interfaces/followerInterface';
+import { dbFolloweAttr, followerDoc } from '@follower/interfaces/followerInterface';
 import { followerModel } from '@follower/models/followerModel';
+import { notification } from '@notification/interfaces/notificationInterface';
+import { notificationModel } from '@notification/model/notificationModel';
+import { notificationSocket } from '@utils/features/sockets/notificationSocket';
+import { userDoc } from '@utils/features/users/interface/user.interface';
 import { userModel } from '@utils/features/users/models/userModel';
 
 export class FollowerService {
@@ -28,7 +32,40 @@ export class FollowerService {
       },
     ]);
 
-    await Promise.all([followerCreation, updatingFollowerCount]);
+    const [follower, user] = await Promise.all([
+      followerCreation,
+      userModel.findById(followerId),
+      updatingFollowerCount,
+    ]);
+
+    if (user && user.userSettings.notificationSettings.onComment && followerId !== userId) {
+      // create notification
+      const notification = new notificationModel();
+      const notificationData = FollowerService.prototype.getNotificationData(user, follower);
+      await notification.insertNotification(notificationData);
+
+      // emit socket notification
+      notificationSocket.emit('addedd notification', notificationData, { userTo: follower.followerId });
+    }
+  }
+
+  private getNotificationData(user: userDoc, follower: followerDoc): notification {
+    return {
+      comment: '',
+      createdAt: new Date(),
+      createdItemId: follower._id.toString(),
+      entityId: user._id.toString(),
+      imageId: '',
+      imageVersion: '',
+      message: `${user.userName} commented on this post`,
+      notificationType: 'follow',
+      post: '',
+      reaction: '',
+      read: false,
+      userFrom: follower.followeeId,
+      userTo: follower.followerId,
+      profileImg: user.profileImg,
+    };
   }
 
   static async removeFollowerDb(data: dbFolloweAttr) {

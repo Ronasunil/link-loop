@@ -121,6 +121,7 @@
       "@reaction/*": ["./src/features/reactions/*"],
       "@comment/*": ["./src/features/comments/*"],
       "@follower/*": ["./src/features/follower/*"],
+      "@notification/*": ["./src/features/notification/*"],
       "@utils/*": ["./src/*"]
     }
   }

@@ -9,6 +9,7 @@ import { config } from './config';
 import { App } from './app';
 import { PostSocket } from './features/sockets/postSocket';
 import { FollowerSocket } from './features/sockets/followerSocket';
+import { NotificationSocket } from './features/sockets/notificationSocket';
 
 export class Server {
   private PORT = config.PORT;
@@ -65,9 +66,11 @@ export class Server {
   private socketConnections(server: socketServer) {
     const postSocket = new PostSocket(server);
     const followerScoket = new FollowerSocket(server);
+    const notificationSocket = new NotificationSocket();
 
     postSocket.listen();
     followerScoket.listen();
+    notificationSocket.listen(server);
   }
 }
 

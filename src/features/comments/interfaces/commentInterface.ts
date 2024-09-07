@@ -4,6 +4,7 @@ import { Request } from 'express';
 export interface commentAttrs {
   _id: string | mongoose.Types.ObjectId;
   userTo: string;
+  userFrom: string;
   userName: string;
   profilePic: string;
   authId: string;
@@ -15,6 +16,7 @@ export interface commentAttrs {
 export interface commentDoc extends mongoose.Document {
   _id: string | mongoose.Types.ObjectId;
   userTo: string;
+  userFrom: string;
   userName: string;
   profilePic: string;
   authId: string;

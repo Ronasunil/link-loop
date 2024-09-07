@@ -85,6 +85,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
       },
+      onComment: {
+        type: Boolean,
+        default: true,
+      },
     },
   },
   socialMediaLinks: {

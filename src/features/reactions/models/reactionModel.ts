@@ -17,6 +17,16 @@ const reactionSchema = new mongoose.Schema(
       ref: 'Post',
       index: true,
     },
+    userFrom: {
+      type: String,
+      required: true,
+    },
+
+    userTo: {
+      type: String,
+      required: true,
+    },
+
     authId: {
       type: mongoose.Types.ObjectId,
       ref: 'Auth',

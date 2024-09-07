@@ -35,6 +35,7 @@ class Comment {
       createdAt: new Date(),
       userName: req.currentUser!.userName,
       profilePic,
+      userFrom: req.currentUser!._id.toString(),
     };
   }
 }
