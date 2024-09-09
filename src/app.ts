@@ -8,8 +8,6 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import cors from 'cors';
 
-import 'express-async-errors';
-
 // local imports
 import { config } from '@utils/config';
 import { CustomError } from '@global/helpers/errorHandler';
