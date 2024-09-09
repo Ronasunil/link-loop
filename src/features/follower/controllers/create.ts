@@ -31,7 +31,7 @@ class Follow {
       followeeCount: userData.followeeCount,
       followersCount: userData.followersCount,
       totalPost: userData.totalPost,
-      profilePic: userData.profilePic,
+      profileImg: userData.profileImg,
       userId: userData._id.toString(),
       followerId,
     };

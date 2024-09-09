@@ -1,4 +1,5 @@
 import express, { Application } from 'express';
+import 'express-async-errors';
 import http from 'http';
 import { Database } from '@utils/db';
 
@@ -10,6 +11,7 @@ import { App } from './app';
 import { PostSocket } from './features/sockets/postSocket';
 import { FollowerSocket } from './features/sockets/followerSocket';
 import { NotificationSocket } from './features/sockets/notificationSocket';
+import { ImageSocket } from './features/sockets/imageSocket';
 
 export class Server {
   private PORT = config.PORT;
@@ -67,9 +69,11 @@ export class Server {
     const postSocket = new PostSocket(server);
     const followerScoket = new FollowerSocket(server);
     const notificationSocket = new NotificationSocket();
+    const imageSocket = new ImageSocket(server);
 
     postSocket.listen();
     followerScoket.listen();
+    imageSocket.listen();
     notificationSocket.listen(server);
   }
 }

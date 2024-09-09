@@ -19,7 +19,7 @@ export interface dbFolloweAttr {
 
 export interface followerData {
   userId: string;
-  profilePic: string;
+  profileImg: string;
   followersCount: number;
   followeeCount: number;
   followerId: string;
@@ -28,7 +28,7 @@ export interface followerData {
 
 export interface follower {
   userId: string;
-  profilePic: string;
+  profileImg: string;
   followersCount: number;
   followeeCount: number;
   totalPost: number;

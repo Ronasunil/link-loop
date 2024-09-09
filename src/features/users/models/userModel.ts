@@ -22,10 +22,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
 
-  bgImage: {
-    type: String,
-  },
-
   followersCount: {
     type: Number,
     default: 0,
@@ -105,12 +101,7 @@ const userSchema = new mongoose.Schema({
     default: '',
   },
 
-  bgImageVersion: {
-    type: String,
-    default: '',
-  },
-
-  bgImageId: {
+  bgImg: {
     type: String,
     default: '',
   },
