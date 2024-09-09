@@ -10,7 +10,6 @@ export interface redisUserAttrs {
   avatarColor: string;
   avatarImage: string;
   dob: Date | string;
-  bgImage: string;
   passwordResetExpires: Date | string;
   passwordResetToken: string;
   isBanned: boolean;
@@ -18,7 +17,7 @@ export interface redisUserAttrs {
   isVerified: boolean;
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
-  profilePic: string;
+  profileImg: string;
   followersCount: number;
   followeeCount: number;
   bgImageVersion: string;
@@ -26,6 +25,9 @@ export interface redisUserAttrs {
   blocked: string[];
   blockedBy: string[];
   totalPost: number;
+  bgImg: string;
+  imgVersion: string;
+  imgId: string;
 }
 
 export interface redisUserUpdationProp {
@@ -37,7 +39,7 @@ export interface redisUserUpdationProp {
   avatarColor?: string;
   avatarImage?: string;
   dob?: Date | string;
-  bgImage?: string;
+  bgImg?: string;
   passwordResetExpires?: Date | string;
   passwordResetToken?: string;
   isBanned?: boolean;
@@ -48,11 +50,13 @@ export interface redisUserUpdationProp {
   profileImg?: string;
   followersCount?: number;
   followeeCount?: number;
-  bgImageVersion?: string;
-  bgImageId?: string;
   blocked?: string[];
   blockedBy?: string[];
   totalPost?: number;
+  bgImageVersion?: string;
+  bgImageId?: string;
+  imgVersion?: string;
+  imgId?: string;
 }
 
 export interface userAttrs {
@@ -61,13 +65,13 @@ export interface userAttrs {
   role?: string;
   name: string;
   dob?: Date | string;
-  bgImage?: string;
+  bgImg?: string;
   isBanned?: boolean;
   isDeleted?: boolean;
   isVerified?: boolean;
   userSettings?: userSettings;
   socialMediaLinks?: socialMediaLinks;
-  profileImg: string;
+  profileImg?: string;
   followersCount?: number;
   followeeCount?: number;
   totalPost?: number;
@@ -78,24 +82,17 @@ export interface userDoc extends mongoose.Document {
   _id: string | mongoose.Types.ObjectId;
   role: string;
   name: string;
-  userName?: string;
-  uId?: string;
-  email?: string;
-  password?: string;
-  avatarColor?: string;
-  avatarImage?: string;
   dob: Date | string;
-  bgImage: string;
   isBanned: boolean;
   isDeleted: boolean;
   isVerified: boolean;
+  userName: string;
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
   profileImg: string;
   followersCount: number;
   followeeCount: number;
-  bgImageVersion: string;
-  bgImageId: string;
+  bgImg: string;
   blocked: mongoose.Types.ObjectId[];
   blockedBy: mongoose.Types.ObjectId[];
   totalPost: number;

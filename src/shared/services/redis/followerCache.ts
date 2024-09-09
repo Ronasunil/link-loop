@@ -56,12 +56,12 @@ class FollowerCache extends BaseCache {
     const followersIds = await this.client.lrange(`${followType}:${userId}`, skip, limit);
 
     for (let followerId of followersIds) {
-      const { followeeCount, followersCount, totalPost, profilePic, userName } = await userCache.getUser(followerId);
+      const { followeeCount, followersCount, totalPost, profileImg, userName } = await userCache.getUser(followerId);
       const followerData: follower = {
         followeeCount,
         followersCount,
         totalPost,
-        profilePic,
+        profileImg,
         userId,
         userName,
       };

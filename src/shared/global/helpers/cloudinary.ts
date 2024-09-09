@@ -1,12 +1,7 @@
 import { v2 as cloudinary, UploadApiOptions } from 'cloudinary';
 
 class Cloudinary {
-  async imageUpload(
-    file: string,
-    publicId?: string,
-    overWrite?: boolean,
-    invalidate?: boolean
-  ) {
+  async imageUpload(file: string, publicId?: string, overWrite?: boolean, invalidate?: boolean) {
     const options: UploadApiOptions = {
       public_id: publicId,
       overwrite: overWrite,

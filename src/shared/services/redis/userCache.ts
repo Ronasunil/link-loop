@@ -22,11 +22,12 @@ export class UserCache extends BaseCache {
     return JSON.parse(user);
   }
 
-  async updateUser(userId: string | mongoose.Types.ObjectId, data: redisUserUpdationProp) {
-    const user = this.getUser(userId);
+  async updateUser(userId: string | mongoose.Types.ObjectId, data: redisUserUpdationProp): Promise<redisUserAttrs> {
+    const user = await this.getUser(userId);
     const updatedData = JSON.stringify({ ...user, ...data });
 
     this.client.set(`user:${userId}`, updatedData);
+    return JSON.parse(updatedData) as redisUserAttrs;
   }
 
   async incrFollowCount(userId: string, key: 'followeeCount' | 'followersCount', value: number) {
