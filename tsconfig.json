@@ -122,6 +122,8 @@
       "@comment/*": ["./src/features/comments/*"],
       "@follower/*": ["./src/features/follower/*"],
       "@notification/*": ["./src/features/notification/*"],
+      "@image/*": ["./src/features/image/*"],
+      "@chat/*": ["./src/features/chat/*"],
       "@utils/*": ["./src/*"]
     }
   }

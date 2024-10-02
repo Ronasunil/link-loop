@@ -12,6 +12,7 @@ import { PostSocket } from './features/sockets/postSocket';
 import { FollowerSocket } from './features/sockets/followerSocket';
 import { NotificationSocket } from './features/sockets/notificationSocket';
 import { ImageSocket } from './features/sockets/imageSocket';
+import { ChatSocket } from './features/sockets/chatSocket';
 
 export class Server {
   private PORT = config.PORT;
@@ -70,6 +71,7 @@ export class Server {
     const followerScoket = new FollowerSocket(server);
     const notificationSocket = new NotificationSocket();
     const imageSocket = new ImageSocket(server);
+    const chatSocket = new ChatSocket(server);
 
     postSocket.listen();
     followerScoket.listen();

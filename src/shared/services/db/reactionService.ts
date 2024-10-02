@@ -38,6 +38,7 @@ export class ReactionService {
       entityId: user._id.toString(),
       imageId: '',
       imageVersion: '',
+      chat: '',
       message: `${userName} started following you`,
       notificationType: 'reaction',
       post: '',

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { userDoc } from '../interface/user.interface';
+import { config } from '@utils/config';
 
 const userSchema = new mongoose.Schema({
   authId: {
@@ -98,7 +99,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImg: {
     type: String,
-    default: '',
+    default: config.DEFAULT_PROFILE_IMG,
   },
 
   bgImg: {

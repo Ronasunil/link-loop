@@ -10,6 +10,7 @@ export interface notification {
   notificationType: string;
   comment: string;
   reaction: string;
+  chat: string;
   post: string;
   imageId: string;
   imageVersion: string;
@@ -27,6 +28,7 @@ export interface notificationDoc extends mongoose.Document {
   notificationType: string;
   comment: string;
   reaction: string;
+  chat: string;
   post: string;
   imageId: string;
   imageVersion: string;

@@ -14,6 +14,7 @@ import { redisUserAttrs, userAttrs } from '@utils/features/users/interface/user.
 import { AuthWorker } from '@workers/authWorker';
 import { SignupWorker } from '@workers/signupWorker';
 import { Helpers } from '@global/helpers/helpers';
+import { config } from '@utils/config';
 
 interface bodyWithAuthProps extends Request {
   body: {
@@ -107,7 +108,7 @@ export class Signup {
         instagram: '',
       },
       dob: '',
-      profileImg: '',
+      profileImg: config.DEFAULT_PROFILE_IMG!,
       followersCount: 0,
       followeeCount: 0,
       bgImageId: '',
@@ -131,7 +132,7 @@ export class Signup {
     userId: mongoose.Types.ObjectId | string,
     name: string
   ): userAttrs {
-    return { authId, _id: userId, name, profileImg: '', totalPost: 0 };
+    return { authId, _id: userId, name, profileImg: config.DEFAULT_PROFILE_IMG!, totalPost: 0 };
   }
 }
 
