@@ -19,7 +19,7 @@ class FollowerCache extends BaseCache {
     await this.client.lpush(`followers:${followerId}`, userId);
     await this.client.lpush(`following:${userId}`, followerId);
 
-    // stoing follower in hash for faster reteriving
+    // storing follower in hash for faster reteriving
     await Promise.all([
       this.client.hset(`followersHash:${followerId}`, userId, '1'),
       this.client.hset(`followingsHash:${userId}`, followerId, '1'),

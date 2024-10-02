@@ -43,6 +43,7 @@ export class CommentService {
       message: `${userName} commented on this post`,
       notificationType: 'comment',
       post: JSON.stringify(post),
+      chat: '',
       reaction: '',
       read: false,
       userFrom: comment.userFrom.toString(),

@@ -61,6 +61,7 @@ export class FollowerService {
       notificationType: 'follow',
       post: '',
       reaction: '',
+      chat: '',
       read: false,
       userFrom: follower.followeeId,
       userTo: follower.followerId,
