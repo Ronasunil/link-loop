@@ -68,7 +68,7 @@ export class Signup {
   }
 
   private redisUserData(authObj: authAttrs): redisUserAttrs {
-    const { userName, email, avatarColor, avatarImage, password, _id } = authObj;
+    const { userName, email, avatarColor, avatarImage, _id } = authObj;
 
     return {
       _id,
@@ -76,7 +76,6 @@ export class Signup {
       email,
       avatarColor,
       avatarImage,
-      password,
       name: userName,
       userSettings: {
         notificationSettings: {
@@ -96,6 +95,7 @@ export class Signup {
           visibleForUserOnly: true,
         },
       },
+      basicInfo: { job: '', location: '', quote: '', school: '' },
       isBanned: false,
       isDeleted: false,
       isVerified: false,
@@ -132,7 +132,14 @@ export class Signup {
     userId: mongoose.Types.ObjectId | string,
     name: string
   ): userAttrs {
-    return { authId, _id: userId, name, profileImg: config.DEFAULT_PROFILE_IMG!, totalPost: 0 };
+    return {
+      authId,
+      _id: userId,
+      name,
+      profileImg: config.DEFAULT_PROFILE_IMG!,
+      totalPost: 0,
+      basicInfo: { job: '', location: '', quote: '', school: '' },
+    };
   }
 }
 

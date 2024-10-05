@@ -5,6 +5,7 @@ import httpStatus from 'http-status-codes';
 import { chatCache } from '@services/redis/chatCache';
 import { ChatWorker } from '@workers/chatWorker';
 import { reqForMessageDeletion } from '@chat/interfaces/chatInterface';
+import { reactionType } from '@reaction/interfaces/reactionInterface';
 
 class Update {
   async markMessageAsSeen(req: Request, res: Response) {
@@ -32,7 +33,7 @@ class Update {
 
   async addReaction(req: Request, res: Response) {
     const { messageId, conversationId } = req.params as { messageId: string; conversationId: string };
-    const { type } = req.body as { type: string };
+    const { type } = req.body as { type: reactionType };
     const senderName = req.currentUser!.userName;
 
     const chat = await chatCache.addReaction(conversationId, messageId, type, senderName);

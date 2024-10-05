@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import mongoose from 'mongoose';
 
 export interface redisUserAttrs {
@@ -6,7 +7,6 @@ export interface redisUserAttrs {
   name: string;
   userName: string;
   email: string;
-  password: string;
   avatarColor: string;
   avatarImage: string;
   dob: Date | string;
@@ -18,6 +18,7 @@ export interface redisUserAttrs {
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
   profileImg: string;
+  basicInfo: { quote: string; school: string; job: string; location: string };
   followersCount: number;
   followeeCount: number;
   bgImageVersion: string;
@@ -35,7 +36,6 @@ export interface redisUserUpdationProp {
   name?: string;
   userName?: string;
   email?: string;
-  password?: string;
   avatarColor?: string;
   avatarImage?: string;
   dob?: Date | string;
@@ -45,8 +45,9 @@ export interface redisUserUpdationProp {
   isBanned?: boolean;
   isDeleted?: boolean;
   isVerified?: boolean;
-  userSettings?: userSettings;
-  socialMediaLinks?: socialMediaLinks;
+  userSettings?: userSettingsUpdationProp;
+  socialMediaLinks?: { facebook?: string; instagram?: string };
+  basicInfo?: { quote?: string; school?: string; job?: string; location?: string };
   profileImg?: string;
   followersCount?: number;
   followeeCount?: number;
@@ -75,6 +76,7 @@ export interface userAttrs {
   followersCount?: number;
   followeeCount?: number;
   totalPost?: number;
+  basicInfo: { quote: string; school: string; job: string; location: string };
 }
 
 export interface userDoc extends mongoose.Document {
@@ -86,7 +88,6 @@ export interface userDoc extends mongoose.Document {
   isBanned: boolean;
   isDeleted: boolean;
   isVerified: boolean;
-  userName: string;
   userSettings: userSettings;
   socialMediaLinks: socialMediaLinks;
   profileImg: string;
@@ -95,12 +96,25 @@ export interface userDoc extends mongoose.Document {
   bgImg: string;
   blocked: mongoose.Types.ObjectId[];
   blockedBy: mongoose.Types.ObjectId[];
+  basicInfo: { quote: string; school: string; job: string; location: string };
   totalPost: number;
 }
 
+export interface userUpdationSocialLink {
+  facebook?: string;
+  instagram?: string;
+}
+
+export interface userUpdationBasicinfo {
+  quote?: string;
+  school?: string;
+  job?: string;
+  location?: string;
+}
+
 interface socialMediaLinks {
-  facebook: String;
-  instagram: String;
+  facebook: string;
+  instagram: string;
 }
 
 interface userSettings {
@@ -121,4 +135,59 @@ interface userSettings {
     onLike: boolean;
     onComment: boolean;
   };
+}
+
+export interface userSettingsUpdationProp {
+  storySettings: {
+    visibleForFollowers?: boolean;
+    visibleForUserOnly?: boolean;
+  };
+
+  postSettings: {
+    unlisted?: boolean;
+    public?: boolean;
+    private?: boolean;
+  };
+
+  notificationSettings: {
+    onFollow?: boolean;
+    onMessage?: boolean;
+    onLike?: boolean;
+    onComment?: boolean;
+  };
+}
+
+export interface reqForSocialLinkUpdation extends Request {
+  body: {
+    facebook?: string;
+    instagram?: string;
+  };
+}
+
+export interface reqForBasicInfoUpdation extends Request {
+  body: {
+    quote?: string;
+    school?: string;
+    job?: string;
+    location?: string;
+  };
+}
+
+export interface reqForNotificationUpdation extends Request {
+  body: userSettingsUpdationProp['notificationSettings'];
+}
+
+export interface updateSocialLinksJob {
+  data: redisUserUpdationProp['socialMediaLinks'];
+  userId: string;
+}
+
+export interface updateBasicinfoJob {
+  data: redisUserUpdationProp['basicInfo'];
+  userId: string;
+}
+
+export interface updateNotificationJob {
+  data: userSettingsUpdationProp['notificationSettings'];
+  userId: string;
 }
