@@ -7,6 +7,7 @@ import { followerRouter } from '@follower/routes/router';
 import { notificationRouter } from '@notification/routes/router';
 import { imageRouter } from './features/image/routes/router';
 import { chatRouter } from '@chat/routes/route';
+import { userRouter } from '@users/routes/router';
 
 export const routes = function (app: Application) {
   const baseURL = '/api/v1';
@@ -18,4 +19,5 @@ export const routes = function (app: Application) {
   app.use(`${baseURL}`, notificationRouter.routes());
   app.use(`${baseURL}`, imageRouter.routes());
   app.use(`${baseURL}`, chatRouter.routes());
+  app.use(`${baseURL}`, userRouter.routes());
 };

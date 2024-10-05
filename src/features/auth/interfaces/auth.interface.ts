@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Request } from 'express';
 
 declare global {
   namespace Express {
@@ -77,3 +78,11 @@ export interface forgotPasswordTemplateData {
 //   passwordResetExpires?: Date | string;
 //   passwordResetToken?: string;
 // }
+
+export interface reqForPasswordUpdation extends Request {
+  body: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  };
+}

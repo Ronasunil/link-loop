@@ -8,6 +8,7 @@ import { signout } from '../controllers/signOut';
 import { password } from '../controllers/password';
 import { forgotPasswordSchema } from '../schemas/forgotPasswordSchema';
 import { resetPasswordSchema } from '../schemas/resetPasswordSchema';
+import { passwordUpdationSchema } from '../schemas/updationSchema';
 class Routes {
   private Router: Router;
   constructor() {
@@ -32,6 +33,14 @@ class Routes {
       // Middlewares.currentUserCheck,
       Middlewares.joiValidation(resetPasswordSchema),
       password.resetPassword
+    );
+
+    this.Router.patch(
+      '/auth/password',
+      Middlewares.validateToken,
+      Middlewares.currentUserCheck,
+      Middlewares.joiValidation(passwordUpdationSchema),
+      password.changePassword
     );
     return this.Router;
   }

@@ -1,5 +1,6 @@
 import { Socket, Server as socketServer } from 'socket.io';
 import { senderReciver } from '../chat/interfaces/chatInterface';
+import { userMap } from './userSocket';
 
 export let chatSocket: socketServer;
 
@@ -10,8 +11,13 @@ export class ChatSocket {
 
   listen() {
     this.io.on('connection', (socket: Socket) => {
-      socket.emit('join room', (data: senderReciver) => {
-        console.log(data);
+      socket.on('join room', (data: senderReciver) => {
+        const { senderName, reciverName } = data;
+        const senderSocketId = userMap[senderName];
+        const reciverSocketId = userMap[reciverName];
+
+        socket.join(senderSocketId);
+        socket.join(reciverSocketId);
       });
     });
   }

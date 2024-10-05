@@ -4,7 +4,7 @@ import { authModel } from '@utils/features/auth/models/authModel';
 import { Job } from 'bullmq';
 
 export class AuthWorker {
-  public authQueue: AuthQueue = new AuthQueue('authQueue');
+  private authQueue: AuthQueue = new AuthQueue('authQueue');
 
   constructor() {
     this.authQueue.processQueue(this.createAuth);

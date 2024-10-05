@@ -4,8 +4,6 @@ import { NotAuthorizedError } from '@global/helpers/errorHandler';
 import { AuthService } from '@services/db/authService';
 import { authDoc, authPayload } from '../interfaces/auth.interface';
 import { userDoc } from '@utils/features/users/interface/user.interface';
-import mongoose from 'mongoose';
-import { authModel } from '../models/authModel';
 
 interface bodyWithLoginProps extends Request {
   body: {
@@ -32,7 +30,6 @@ class Login {
     if (!isPasswordValid) throw new NotAuthorizedError('Invalid credentials');
 
     // assigning cookie
-
     const token = AuthService.signToken(Login.prototype.getTokenPaylod(auth, user));
     req.session = { token };
 
