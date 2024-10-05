@@ -52,7 +52,7 @@ class Get {
     const { skip, limit } = Helpers.paginate(pageNo);
     const { authId } = req.params;
 
-    const cachePosts = await postCache.getPostsByAuthId(authId);
+    const cachePosts = await postCache.getPostsByAuthId(authId, skip, limit);
     console.log(cachePosts, 'pop', authId);
     const posts = cachePosts.length ? cachePosts : await PostService.getPostbyAuthIdDb(authId, skip, limit);
 

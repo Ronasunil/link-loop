@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
 
-  userSetting: {
+  userSettings: {
     storySettings: {
       visibleForFollowers: Boolean,
       visibleForUserOnly: Boolean,
@@ -89,8 +89,15 @@ const userSchema = new mongoose.Schema({
     },
   },
   socialMediaLinks: {
-    facebook: String,
-    instagram: String,
+    facebook: { type: String, default: '' },
+    instagram: { type: String, default: '' },
+  },
+
+  basicInfo: {
+    quote: { type: String, default: '' },
+    school: { type: String, default: '' },
+    job: { type: String, default: '' },
+    location: { type: String, default: '' },
   },
 
   totalPost: {

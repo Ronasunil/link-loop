@@ -19,9 +19,9 @@ class PostCache extends BaseCache {
     await this.client.sadd('postIds', `posts:${postId}`);
   }
 
-  async getPostsByAuthId(authId: string): Promise<postAttrs[] | []> {
+  async getPostsByAuthId(authId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
     const posts: postAttrs[] = [];
-    const postKeys = await this.client.smembers(`auth:${authId}`);
+    const postKeys = (await this.client.smembers(`auth:${authId}`)).slice(skip, limit);
 
     if (!postKeys.length) return [];
 

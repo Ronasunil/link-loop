@@ -46,6 +46,16 @@ class FollowerCache extends BaseCache {
     await Promise.all([unfollowUser, decFollowerCount, decFolloweeCount, removeFollowing]);
   }
 
+  async getFollowers(userId: string): Promise<string[]> {
+    const followersIds = await this.client.lrange(`followers:${userId}`, 0, -1);
+    return followersIds;
+  }
+
+  async getFollowees(userId: string): Promise<string[]> {
+    const followersIds = await this.client.lrange(`following:${userId}`, 0, -1);
+    return followersIds;
+  }
+
   async getFollowData(
     followType: 'followers' | 'following',
     userId: string,

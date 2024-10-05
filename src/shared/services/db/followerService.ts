@@ -57,7 +57,7 @@ export class FollowerService {
       entityId: user._id.toString(),
       imageId: '',
       imageVersion: '',
-      message: `${user.userName} commented on this post`,
+      message: `${user.name} commented on this post`,
       notificationType: 'follow',
       post: '',
       reaction: '',
@@ -106,11 +106,22 @@ export class FollowerService {
     await Promise.all([removeFollower, updatingFollowerCount]);
   }
 
+  static async getFollowers(userId: string): Promise<followerDoc[]> {
+    const followers = await followerModel.find({ followerId: userId }).populate('followeeId').select('followerId');
+    return followers;
+  }
+
+  static async getFollowingsIds(userId: string): Promise<string[]> {
+    const followings = await followerModel.find({ followeeId: userId });
+    return followings.map((f) => f.followerId.toString());
+  }
+
   static async getFollowData(followType: 'followerId' | 'followeeId', userId: string, skip: number, limit: number) {
+    const populationField = followType === 'followerId' ? 'followeeId' : 'followerId';
     const followers = await followerModel
       .find({ [followType]: userId })
-      .populate(followType)
-      .select(followType)
+      .populate(populationField)
+      .select(populationField)
       .skip(skip)
       .limit(limit);
 
