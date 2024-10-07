@@ -1,1 +1,25 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.routes = void 0;
+const routes_1 = require("./features/auth/routes/routes");
+const router_1 = require("./features/posts/routes/router");
+const router_2 = require("./features/reactions/routes/router");
+const router_3 = require("./features/comments/routes/router");
+const router_4 = require("./features/follower/routes/router");
+const router_5 = require("./features/notification/routes/router");
+const router_6 = require("./features/image/routes/router");
+const route_1 = require("./features/chat/routes/route");
+const router_7 = require("./features/users/routes/router");
+const routes = function (app) {
+    const baseURL = '/api/v1';
+    app.use(`${baseURL}`, routes_1.authRoutes.routes());
+    app.use(`${baseURL}`, router_1.postRoutes.routes());
+    app.use(`${baseURL}`, router_2.reactionRouter.routes());
+    app.use(`${baseURL}`, router_3.commentRouter.routes());
+    app.use(`${baseURL}`, router_4.followerRouter.routes());
+    app.use(`${baseURL}`, router_5.notificationRouter.routes());
+    app.use(`${baseURL}`, router_6.imageRouter.routes());
+    app.use(`${baseURL}`, route_1.chatRouter.routes());
+    app.use(`${baseURL}`, router_7.userRouter.routes());
+};
+exports.routes = routes;
