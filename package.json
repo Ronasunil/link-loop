@@ -4,10 +4,6 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon -r tsconfig-paths/register  src/index.ts",
-    "start:seed": "npx ts-node ./src/seed.ts",
-    "start:prod": "pm2 start ./build/index.js -i 5 --watch --attach",
-    "stop": "pm2 stop all",
-    "delete": "pm2 delete all",
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest  --no-cache"
   },
