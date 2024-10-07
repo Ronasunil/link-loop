@@ -16,6 +16,8 @@ export interface postDoc extends mongoose.Document {
   privacy: privacyEnum;
   imageId: string;
   imageVersion: string;
+  videoId: string;
+  videoVersion: string;
   feelings: string;
   bgColor: string;
   createdAt: Date;
@@ -34,6 +36,8 @@ export interface postAttrs {
   privacy: privacyEnum;
   imageId: string;
   imageVersion: string;
+  videoId: string;
+  videoVersion: string;
   feelings: string;
   bgColor: string;
   createdAt: Date;
@@ -68,6 +72,17 @@ export interface reqWithPostProps extends Request {
   };
 }
 
+export interface reqWithVideoPostProps extends Request {
+  body: {
+    video: string;
+    bgColor: string;
+    feelings: string;
+    privacy: privacyEnum;
+    gifUrl: string;
+    profilePic: string;
+  };
+}
+
 export interface postUpdationProps {
   content: string;
   bgColor: string;
@@ -87,6 +102,9 @@ export interface postWithImageUpdationProps {
   image?: string;
   imageId?: string;
   imageVersion?: string;
+  video?: string;
+  videoId?: string;
+  videoVersion?: string;
   reactions?: reactions;
   totalReaction?: number;
   totalComments?: number;
@@ -94,6 +112,49 @@ export interface postWithImageUpdationProps {
 
 export interface reqWithPostUpdationProps extends Request {
   body: postWithImageUpdationProps;
+  params: {
+    postId: string;
+  };
+}
+
+export interface reqWithPostImageProps extends Request {
+  body: {
+    content: string;
+    bgColor: string;
+    feelings: string;
+    privacy: privacyEnum;
+    gifUrl: string;
+    profilePic: string;
+    image: string;
+  };
+}
+
+export interface reqForGetAllPostsProps extends Request {
+  query: {
+    page?: string;
+  };
+}
+
+export interface reqForGetPostByAuthId extends Request {
+  params: {
+    authId: string;
+  };
+
+  query: {
+    page?: string;
+  };
+}
+
+export interface reqForGetPostImgByAuthId extends Request {
+  params: {
+    authId: string;
+  };
+
+  query: {
+    page?: string;
+  };
+}
+export interface reqForGetPostById extends Request {
   params: {
     postId: string;
   };

@@ -51,6 +51,9 @@ const postSchema = new mongoose.Schema({
   imageId: { type: String, default: '' },
   imageVersion: { type: String, default: '' },
 
+  videoId: { type: String, default: '' },
+  videoVersion: { type: String, default: '' },
+
   feelings: { type: String, default: '' },
 
   bgColor: {
