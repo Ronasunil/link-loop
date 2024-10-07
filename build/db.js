@@ -15,16 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Database = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config");
-const ioredis_1 = require("ioredis");
 class Database {
     get MONGOURI() {
         return config_1.config.MONGO_URI;
-    }
-    get REDIS_HOST() {
-        return config_1.config.REDIS_HOST;
-    }
-    get REDIS_PORT() {
-        return config_1.config.REDIS_PORT;
     }
     startDb() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,15 +30,6 @@ class Database {
                 console.log('Trying to reconnect...');
                 mongoose_1.default.connection.on('fail', () => __awaiter(this, void 0, void 0, function* () { return yield this.startDb(); }));
             });
-        });
-    }
-    startCache() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const redis = new ioredis_1.Redis({
-                host: this.REDIS_HOST,
-                port: this.REDIS_PORT,
-            });
-            console.log(yield redis.ping());
         });
     }
 }

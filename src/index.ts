@@ -13,7 +13,7 @@ import { FollowerSocket } from './features/sockets/followerSocket';
 import { NotificationSocket } from './features/sockets/notificationSocket';
 import { ImageSocket } from './features/sockets/imageSocket';
 import { ChatSocket } from './features/sockets/chatSocket';
-mongodb+srv://rona:qS2G5POIhY6IlZkS@cluster0.gkbu53p.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
 export class Server {
   private PORT = config.PORT;
 
@@ -25,7 +25,6 @@ export class Server {
     db.startDb();
     db.startCache();
     application.start();
-    this.handleExit();
     this.startServer(app);
   }
 
@@ -43,7 +42,7 @@ export class Server {
 
   private httpServer(httpServer: http.Server): void {
     httpServer.listen(this.PORT, () => {
-      console.log(`Server start listening on port ${this.PORT} with pid of ${process.pid}`);
+      console.log(`Server start listening on port ${this.PORT}`);
     });
   }
 
@@ -79,28 +78,6 @@ export class Server {
     imageSocket.listen();
     chatSocket.listen();
     notificationSocket.listen(server);
-  }
-
-  private handleExit() {
-    process.on('uncaughtException', (err) => {
-      console.log(`Uncaught error:${err}`);
-      process.exit(1);
-    });
-
-    process.on('unhandledRejection', (err) => {
-      console.log(`Uncaught expression ${err}`);
-      process.exit(2);
-    });
-
-    process.on('SIGTERM', () => {
-      console.log('Caught sigterm');
-      process.exit(2);
-    });
-
-    process.on('SIGINT', () => {
-      console.log('Caught sigint');
-      process.exit(2);
-    });
   }
 }
 
