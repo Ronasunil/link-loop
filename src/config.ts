@@ -8,6 +8,7 @@ class Config {
   public MONGO_URI: string | undefined;
   public NODE_ENV: string | undefined;
   public CLIENT_URL: string | undefined;
+  public SERVER_URL: string | undefined;
   public PORT: number | undefined;
   public REDIS_CLIENT: string | undefined;
   public CLOUD_NAME: string | undefined;
@@ -33,6 +34,7 @@ class Config {
 
     this.JWT_SECRET = process.env.JWT_SECRET;
     this.CLIENT_URL = process.env.CLIENT_URL;
+    this.SERVER_URL = process.env.SERVER_URL;
     this.MONGO_URI = process.env.MONGO_URI;
     this.NODE_ENV = process.env.NODE_ENV;
     this.SESSION_SECRET = process.env.SESSION_SECRET;

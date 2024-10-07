@@ -9,7 +9,7 @@ import { PasswordChangedMailWorker } from '@workers/passwordChangedMailWorker';
 import { ResetPasswordMailWorker } from '@workers/resetPasswordMailWorker';
 import { format } from 'date-fns';
 import { reqForPasswordUpdation } from '../interfaces/auth.interface';
-import { userModel } from '@users/models/userModel';
+
 import { authModel } from '../models/authModel';
 
 interface bodyWithForgotPasswordProps extends Request {
