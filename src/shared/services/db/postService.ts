@@ -13,6 +13,11 @@ export class PostService {
     return posts;
   }
 
+  static async getPostVideoByAuthIdDb(authId: string, skip: number, limit: number): Promise<postDoc[] | null> {
+    const posts = await postModel.find({ authId, videoId: { $nin: [''] }, videoVersion: { $nin: [''] } });
+    return posts;
+  }
+
   static async getPostByIdDb(id: string | mongoose.Types.ObjectId): Promise<postDoc[] | null> {
     return postModel.findById(id);
   }

@@ -15,39 +15,56 @@ class Update {
   async post(req: reqWithPostUpdationProps, res: Response) {
     const { postId } = req.params;
 
-    const updateData = await Update.prototype.getUpdatedData(req);
-    console.log('updtedata', updateData);
-    const updatedPost = await postCache.updatePost(postId, updateData);
+    const updatedData = await Update.prototype.getUpdatedData(req);
+
+    const updatedPost = await postCache.updatePost(postId, updatedData);
     postSocketIo.emit('post-updated', updatedPost);
-    const postworker = await new PostWorker().prepareQueueForUpdation(updateData);
+    const postworker = await new PostWorker().prepareQueueForUpdation(updatedData);
     postworker.updatePost(postId);
 
     res.status(httpStatus.OK).json({ post: updatedPost });
   }
 
   private async getUpdatedData(req: reqWithPostUpdationProps): Promise<postWithImageUpdationProps> {
-    const { bgColor, content, feelings, gifUrl, privacy, profilePic, imageId, imageVersion, image, reactions } =
-      req.body;
+    const { imageId, imageVersion, image, video, videoVersion, videoId } = req.body;
     let data: postWithImageUpdationProps;
     data = req.body;
 
-    // post updation that already has image
-    if (imageId && imageVersion) data = req.body;
+    if ((image && video) || (imageId && imageVersion && videoId && videoVersion)) {
+      throw new BadRequestError('Image and video cannot be in the same post or something went wrong');
+    }
 
-    // post updation which includes updation of image
-    if (image) {
+    if (image && !video) {
       const result = await cloudinaryUploader.imageUpload(image);
 
       if (!result?.public_id) throw new BadRequestError('File upload failed: Try again');
 
       data = {
+        ...req.body,
         imageId: result.public_id,
         imageVersion: result.version.toString(),
-        ...req.body,
+        videoId: '',
+        videoVersion: '',
       };
     }
 
-    // @ts-ignore
+    // post updation which includes updation of video NOTE:(updating video should not have image)
+    if (video && !image) {
+      const result = await cloudinaryUploader.videoUpload(video);
+      if (!result?.public_id) throw new BadRequestError('Video upload failed: Try again');
+
+      data = {
+        ...req.body,
+        videoId: result.public_id,
+        videoVersion: result.version.toString(),
+        imageId: '',
+        imageVersion: '',
+      };
+    }
+    delete data.video;
+    delete data.image;
+
+    console.log(data, 'l');
     return data;
   }
 }

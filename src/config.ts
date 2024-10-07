@@ -20,6 +20,10 @@ class Config {
   public ETHEREAL_PORT: number | undefined;
   public ETHEREAL_EMAIL: string | undefined;
   public ETHEREAL_PASSWORD: string | undefined;
+  public BREVO_HOST: string | undefined;
+  public BREVO_PORT: number | undefined;
+  public BREVO_EMAIL: string | undefined;
+  public BREVO_PASSWORD: string | undefined;
   public PAGE_lIMIT: number | undefined;
   public DEFAULT_PROFILE_IMG: string | undefined;
 
@@ -44,6 +48,11 @@ class Config {
     this.ETHEREAL_PORT = Number.parseInt(process.env.ETHEREAL_PORT!);
     this.ETHEREAL_EMAIL = process.env.ETHEREAL_EMAIL;
     this.ETHEREAL_PASSWORD = process.env.ETHEREAL_PASSWORD;
+    this.BREVO_HOST = process.env.BREVO_HOST;
+    this.BREVO_EMAIL = process.env.BREVO_EMAIL;
+    this.BREVO_PORT = Number.parseInt(process.env.BREVO_PORT!);
+    this.BREVO_PASSWORD = process.env.BREVO_PASSWORD;
+
     this.DEFAULT_PROFILE_IMG = process.env.DEFAULT_PROFILE_IMG;
     this.PAGE_lIMIT = Number.parseInt(process.env.PAGE_LIMIT!);
   }
