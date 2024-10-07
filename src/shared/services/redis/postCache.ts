@@ -111,6 +111,7 @@ class PostCache extends BaseCache {
     if (!post) throw new BadRequestError(`Can't find item`);
 
     const updatedData = JSON.stringify({ ...post, ...data });
+    console.log(data);
     await this.client.set(`post:${postId}`, updatedData);
 
     return JSON.parse(updatedData) as postAttrs;

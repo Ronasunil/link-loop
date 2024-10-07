@@ -15,11 +15,11 @@ class Update {
   async post(req: reqWithPostUpdationProps, res: Response) {
     const { postId } = req.params;
 
-    const updateData = await Update.prototype.getUpdatedData(req);
+    const updatedData = await Update.prototype.getUpdatedData(req);
 
-    const updatedPost = await postCache.updatePost(postId, updateData);
+    const updatedPost = await postCache.updatePost(postId, updatedData);
     postSocketIo.emit('post-updated', updatedPost);
-    const postworker = await new PostWorker().prepareQueueForUpdation(updateData);
+    const postworker = await new PostWorker().prepareQueueForUpdation(updatedData);
     postworker.updatePost(postId);
 
     res.status(httpStatus.OK).json({ post: updatedPost });
@@ -61,7 +61,10 @@ class Update {
         imageVersion: '',
       };
     }
+    delete data.video;
+    delete data.image;
 
+    console.log(data, 'l');
     return data;
   }
 }
