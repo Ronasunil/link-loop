@@ -76,6 +76,7 @@ export class Server {
     postSocket.listen();
     followerScoket.listen();
     imageSocket.listen();
+    chatSocket.listen();
     notificationSocket.listen(server);
   }
 }

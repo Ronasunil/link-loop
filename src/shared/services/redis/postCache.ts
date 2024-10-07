@@ -35,6 +35,24 @@ class PostCache extends BaseCache {
     return posts;
   }
 
+  async getPostVideosByAuthId(authId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
+    const posts: postAttrs[] = [];
+
+    const postKeys = (await this.client.smembers(`auth:${authId}`)).slice(skip, limit);
+    if (!postKeys.length) return posts;
+
+    for (const key of postKeys) {
+      const postJson = await this.client.get(key);
+      if (!postJson) continue;
+
+      const post = JSON.parse(postJson) as postAttrs;
+
+      if (post.videoId && post.videoVersion) posts.push(post);
+    }
+
+    return posts;
+  }
+
   async getPostImagesByAuthId(authId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
     const posts: postAttrs[] = [];
 
@@ -47,7 +65,7 @@ class PostCache extends BaseCache {
       if (!postJson) continue;
 
       const post = JSON.parse(postJson);
-      console.log(post);
+
       const postWithImage = post.imageId && post.imageVersion ? post : null;
 
       if (postWithImage) posts.push(postWithImage);
@@ -83,8 +101,6 @@ class PostCache extends BaseCache {
   }
 
   async deletePost(postId: string, authId: string): Promise<void> {
-    const x = await this.client.del(`post:${postId}`);
-    console.log('xxx', x);
     await this.client.srem(`auth:${authId}`, `post:${postId}`);
     await this.client.srem('postsIds', `post:${postId}`);
   }
@@ -95,6 +111,7 @@ class PostCache extends BaseCache {
     if (!post) throw new BadRequestError(`Can't find item`);
 
     const updatedData = JSON.stringify({ ...post, ...data });
+    console.log(data);
     await this.client.set(`post:${postId}`, updatedData);
 
     return JSON.parse(updatedData) as postAttrs;

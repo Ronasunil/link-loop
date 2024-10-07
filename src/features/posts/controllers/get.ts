@@ -4,37 +4,13 @@ import { PostService } from '@services/db/postService';
 import { postCache } from '@services/redis/postCache';
 
 import { Helpers } from '@global/helpers/helpers';
-
-interface reqForGetAllPostsProps extends Request {
-  query: {
-    page?: string;
-  };
-}
-
-interface reqForGetPostByAuthId extends Request {
-  params: {
-    authId: string;
-  };
-
-  query: {
-    page?: string;
-  };
-}
-
-interface reqForGetPostImgByAuthId extends Request {
-  params: {
-    authId: string;
-  };
-
-  query: {
-    page?: string;
-  };
-}
-interface reqForGetPostById extends Request {
-  params: {
-    postId: string;
-  };
-}
+import {
+  reqForGetAllPostsProps,
+  reqForGetPostByAuthId,
+  reqForGetPostById,
+  reqForGetPostImgByAuthId,
+} from '@post/interfaces/postInterfaces';
+import { cache } from 'joi';
 
 class Get {
   async posts(req: reqForGetAllPostsProps, res: Response) {
@@ -69,6 +45,20 @@ class Get {
     const posts = cachePosts.length ? cachePosts : await PostService.getPostImagesByAuthIdDb(authId, skip, limit);
 
     res.status(httpStatus.OK).json({ posts });
+  }
+
+  async postsWithVideosByAuthId(req: Request, res: Response) {
+    const { page } = req.query as { page: string };
+    const { authId } = req.params as { authId: string };
+
+    const pageNo = Number.parseInt(page || '1');
+    const { skip, limit } = Helpers.paginate(pageNo);
+
+    const chachePosts = await postCache.getPostVideosByAuthId(authId, skip, limit);
+
+    const posts = chachePosts.length ? chachePosts : await PostService.getPostVideoByAuthIdDb(authId, skip, limit);
+
+    res.status(httpStatus.OK).json({ message: 'Post with videos', posts });
   }
 
   async postsWithId(req: reqForGetPostById, res: Response) {

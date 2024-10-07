@@ -18,8 +18,18 @@ export const postWithImageSchema = Joi.object({
   gifUrl: Joi.string().required().allow(null, ''),
 });
 
+export const postWithVideoSchema = Joi.object({
+  video: Joi.string().required(),
+  bgColor: Joi.string().required().allow(null, ''),
+  feelings: Joi.string().required().allow(null, ''),
+  profilePic: Joi.string().required().allow(null, ''),
+  privacy: Joi.string().required().valid('unlisted', 'public', 'private'),
+  gifUrl: Joi.string().required().allow(null, ''),
+});
+
 export const postUpdationSchema = Joi.object({
   image: Joi.string().optional().allow(null, ''),
+  video: Joi.string().optional().allow(null, ''),
   bgColor: Joi.string().optional().allow(null, ''),
   feelings: Joi.string().optional().allow(null, ''),
   profilePic: Joi.string().optional().allow(null, ''),

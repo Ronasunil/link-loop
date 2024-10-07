@@ -16,7 +16,6 @@ export class SendMail {
     };
   }
   protected async developmentMailSender() {
-    console.log(config.ETHEREAL_HOST);
     const transporter = nodemailer.createTransport({
       host: config.ETHEREAL_HOST,
       port: config.ETHEREAL_PORT,
@@ -34,7 +33,17 @@ export class SendMail {
   }
 
   protected async productionMailSender() {
-    await sendGridMail.send(this.mailOptions).catch((err) => {
+    const transporter = nodemailer.createTransport({
+      host: config.BREVO_HOST,
+      port: config.BREVO_PORT,
+      secure: false,
+      auth: {
+        user: config.BREVO_EMAIL,
+        pass: config.BREVO_PASSWORD,
+      },
+    });
+
+    transporter.sendMail(this.mailOptions).catch((err) => {
       console.log(err);
       throw new BadRequestError('Something went wrong');
     });
