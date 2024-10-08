@@ -25,6 +25,7 @@ export class Server {
     db.startDb();
     db.startCache();
     application.start();
+    this.handleExit();
     this.startServer(app);
   }
 
@@ -42,7 +43,7 @@ export class Server {
 
   private httpServer(httpServer: http.Server): void {
     httpServer.listen(this.PORT, () => {
-      console.log(`Server start listening on port ${this.PORT}`);
+      console.log(`Server start listening on port ${this.PORT} with pid of ${process.pid}`);
     });
   }
 
@@ -78,6 +79,28 @@ export class Server {
     imageSocket.listen();
     chatSocket.listen();
     notificationSocket.listen(server);
+  }
+
+  private handleExit() {
+    process.on('uncaughtException', (err) => {
+      console.log(`Uncaught error:${err}`);
+      process.exit(1);
+    });
+
+    process.on('unhandledRejection', (err) => {
+      console.log(`Uncaught expression ${err}`);
+      process.exit(2);
+    });
+
+    process.on('SIGTERM', () => {
+      console.log('Caught sigterm');
+      process.exit(2);
+    });
+
+    process.on('SIGINT', () => {
+      console.log('Caught sigint');
+      process.exit(2);
+    });
   }
 }
 
