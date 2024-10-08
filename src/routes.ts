@@ -8,9 +8,11 @@ import { notificationRouter } from '@notification/routes/router';
 import { imageRouter } from './features/image/routes/router';
 import { chatRouter } from '@chat/routes/route';
 import { userRouter } from '@users/routes/router';
+import { healthRouter } from '@health/routes/router';
 
 export const routes = function (app: Application) {
   const baseURL = '/api/v1';
+  app.use('', healthRouter.routes());
   app.use(`${baseURL}`, authRoutes.routes());
   app.use(`${baseURL}`, postRoutes.routes());
   app.use(`${baseURL}`, reactionRouter.routes());

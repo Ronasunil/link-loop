@@ -56,7 +56,7 @@ class Get {
     const page = req.query as { page: string };
     const pageNo = +page || 1;
     const { skip, limit } = Helpers.paginate(pageNo);
-    console.log(skip);
+
     const userId = req.currentUser!._id.toString();
 
     const randomUsersCache = await userCache.getRandomUserSuggestion(userId, skip, limit);
