@@ -67,13 +67,17 @@ export class UserCache extends BaseCache {
     const users: redisUserAttrs[] = [];
 
     const userIds = (await this.client.smembers('userIds')).slice(skip, limit);
-    // console.log(userIds, userIds.length, limit);
+
     for (const id of userIds) {
       if (id === `user:${excludeId}`) continue;
-      const user = await this.getUser(id);
+
+      const userJson = await this.client.get(id);
+      if (!userJson) throw new BadRequestError(`Can't find user based on this ${id}`);
+
+      const user = JSON.parse(userJson) as redisUserAttrs;
       users.push(user);
     }
-    console.log(users);
+
     return users;
   }
 
@@ -114,7 +118,6 @@ export class UserCache extends BaseCache {
 
   async updateSocialLinks(userId: string, data: redisUserUpdationProp['socialMediaLinks']) {
     const user = await this.getUser(userId);
-    console.log({ ...data, ...user.socialMediaLinks }, data, user.socialMediaLinks);
 
     if (data?.facebook) user.socialMediaLinks.facebook = data.facebook;
     if (data?.instagram) user.socialMediaLinks.instagram = data.instagram;
