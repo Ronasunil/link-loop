@@ -125,6 +125,7 @@
       "@image/*": ["./src/features/image/*"],
       "@chat/*": ["./src/features/chat/*"],
       "@users/*": ["./src/features/users/*"],
+      "@health/*": ["./src/features/health/*"],
       "@utils/*": ["./src/*"]
     }
   }
