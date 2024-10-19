@@ -54,7 +54,7 @@ variable "global_cidr_block" {
 variable "bastion_host-cidr" {
   description = "Bastion host cidr"
   type        = string
-  default     = "152.58.217.187/32"
+  default     = "152.58.201.46/32"
 }
 
 

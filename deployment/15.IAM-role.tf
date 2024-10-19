@@ -19,7 +19,7 @@ resource "aws_iam_role" "main_iam-role" {
 }
 
 resource "aws_iam_policy" "main_iam_role_policy" {
-  policy =  <<EOF
+  policy = <<EOF
   {
     "Version": "2012-10-17",
     "Statement": [
