@@ -14,12 +14,9 @@ check_dependency() {
 
 }
 
-# check unzip is installed
-if check_dependency "unzip"; then
-    echo "unzip is already installed"
-else
-    sudo apt-get install unzip awscli
-fi    
+#  unzip is installed
+sudo apt install unzip
+
 
 # check node is installed
 
@@ -79,13 +76,21 @@ else
     npm install -g pm2
 fi
 
+#aws-cli installing
+sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+#  unzip is installed
+sudo apt install unzip
+sudo unzip awscliv2.zip
+sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 
 git clone -b development https://github.com/Ronasunil/link-loop.git
 cd /link-loop
 
-aws s3 sync s3://link-loop-env/development .
-unzip env-file.zip
-cp config.env.development config.env
+sudo aws s3 sync s3://link-loop-env/development .
+sudo apt install unzip
+sudo unzip env-file.zip
+sudo cp config.env.development config.env
+sudo rm -rf config.env.development
 
 npm install
 npm run build

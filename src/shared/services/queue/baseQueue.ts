@@ -14,8 +14,8 @@ export abstract class BaseQueue {
 
   constructor(queueName: string) {
     this.connectionOptions = {
-      host: '127.0.0.1',
-      port: 6379,
+      host: config.REDIS_HOST,
+      port: config.BREVO_PORT,
     };
     this.queue = new Queue(queueName, {
       connection: {
