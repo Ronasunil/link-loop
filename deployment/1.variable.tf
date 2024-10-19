@@ -102,7 +102,7 @@ variable "elastic_cache_parameter_name" {
 variable "ec2_instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t2.medium"
+  default     = "t2.large"
 }
 
 
