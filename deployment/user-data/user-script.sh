@@ -80,8 +80,9 @@ else
 fi
 
 
+
+cd /home/ubuntu
 git clone -b development https://github.com/Ronasunil/link-loop.git
-cd /link-loop
 
 aws s3 sync s3://link-loop-env/development .
 unzip env-file.zip

@@ -6,7 +6,7 @@ unzip env-file.zip
 cp config.env.development config.env
 rm config.env.development
 sed -i "s/REDIS_CLIENT=.*/REDIS_CLIENT=redis:\/\/$ELASTIC_CACHE_ENDPOINT:6379/" config.env
-sed -i "s/REDIS_HOST=localhost/REDIS_HOST=$$ELASTIC_CACHE_ENDPOINT/" config.env
+sed -i "s/REDIS_HOST=localhost/REDIS_HOST=$ELASTIC_CACHE_ENDPOINT/" config.env
 rm -rf env-file.zip
 cp config.env config.env.development
 zip env-file.zip config.env.development
