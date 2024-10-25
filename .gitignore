@@ -13,6 +13,10 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
+# deployment
+deployment/.terraform/
+
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -86,6 +90,7 @@ web_modules/
 .env.local
 config.env
 config.env.production
+config.env.development
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
