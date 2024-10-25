@@ -21,6 +21,7 @@ export abstract class BaseQueue {
       connection: {
         host: config.REDIS_HOST,
         port: config.REDIS_PORT,
+        connectTimeout: 20000,
       },
     });
 

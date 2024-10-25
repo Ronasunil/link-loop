@@ -6,10 +6,11 @@
     "start:dev": "nodemon -r tsconfig-paths/register  src/index.ts",
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "test": "jest  --no-cache",
-    "start": "NODE_ENV=production pm2 start build/index.js -i 5 --attach --watch",
+    "start": "NODE_ENV=production pm2 start build/index.js -f -i 5  --watch",
     "delete": "pm2 delete all",
     "stop": "pm2 stop all",
-    "seeds:dev": "npx ts-node src/seeds.ts"
+    "seeds:dev": "npx ts-node src/seeds.ts",
+    "zip-project": "zip -r link-loop.zip . -x \"node_modules/*\" \"build\" \".git\" \"config.env\" \"config.env.development\"  \"deployment/.terraform/*\" \"deployment/.terraform.lock.hcl\""
   },
   "author": "",
   "license": "ISC",
