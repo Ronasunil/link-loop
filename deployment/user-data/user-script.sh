@@ -14,12 +14,19 @@ check_dependency() {
 
 }
 
-# check unzip is installed
-if check_dependency "unzip"; then
-    echo "unzip is already installed"
-else
-    sudo apt-get install unzip awscli
-fi    
+#  install zip package
+sudo apt install unzip
+
+
+#  install codedeploy agent
+sudo apt update
+sudo apt install ruby-full -y
+sudo apt install wget -y
+cd /home/ubuntu
+sudo wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+sudo chmod +x ./install
+sudo ./install auto
+
 
 # check node is installed
 
@@ -79,14 +86,26 @@ else
     npm install -g pm2
 fi
 
+#aws-cli installing
+sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+#  unzip is installed
+sudo apt install unzip
+sudo unzip awscliv2.zip
+sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+# folder
+sudo mkdir /home/ubuntu/project
+cd /home/ubuntu/project
 
 git clone -b development https://github.com/Ronasunil/link-loop.git
-cd /link-loop
+cd link-loop
 
-aws s3 sync s3://link-loop-env/development .
-unzip env-file.zip
-cp config.env.development config.env
+sudo aws s3 sync s3://link-loop-env/development .
+sudo apt install unzip
+sudo unzip env-file.zip
+sudo cp config.env.development config.env
+sudo rm -rf config.env.development
 
-npm install
-npm run build
-npm run start
+sudo npm install
+sudo npm run build
+sudo npm run start
