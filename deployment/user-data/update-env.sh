@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 
 aws s3 sync s3://link-loop-env/development .
