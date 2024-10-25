@@ -88,6 +88,8 @@ config.env
 config.env.development
 config.env.production
 
+link-loop.zip
+
 # terrform
 .terraform
 .terraform.*
