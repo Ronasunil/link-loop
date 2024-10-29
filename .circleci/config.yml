@@ -8,7 +8,7 @@ executors:
         - image: cimg/node:20.13.1
         - image: cimg/redis:7.2.4
         - image: cimg/base:2024.10
-    working_directory: ~/app
+    working_directory: ~/repo
   terraform-exec:
     docker:
         - image: hashicorp/terraform:light
