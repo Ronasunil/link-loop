@@ -41,6 +41,10 @@ aliases:
       run:
         name: "Install project dependencies"
         command: npm install
+    - &install_sh
+      run:
+        name: "Install sh"
+        command: apk add --no-cache bash
     - &fail_notification
       slack/notify:
           event: fail
@@ -65,10 +69,7 @@ jobs:
     executor: terraform-exec
     steps:
       - checkout
-      - run:
-          name: "Install bash"
-          command: |
-            apk add --no-cache bash
+      - *install_sh
       - *current_branch
       - run:
           name: terraform validation and formatting
@@ -85,6 +86,7 @@ jobs:
     steps:
       - checkout
       - *current_branch
+      - *install_sh
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
@@ -150,6 +152,7 @@ jobs:
     steps:
       - checkout
       - *current_branch
+      - *install_sh
       - run:
           name: "Destroy aws resource"
           command: |

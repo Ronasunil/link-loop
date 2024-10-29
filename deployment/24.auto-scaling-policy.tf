@@ -16,6 +16,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_scale_up_alarm" {
   namespace           = "AWS/EC2"
   statistic           = "Average"
   threshold           = "80"
+   period = 120
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.ec2_autoscaling.name
@@ -41,6 +42,7 @@ resource "aws_cloudwatch_metric_alarm" "ec2_scale_down_alarm" {
   namespace           = "AWS/EC2"
   statistic           = "Average"
   threshold           = "30"
+  period = 120
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.ec2_autoscaling.name
