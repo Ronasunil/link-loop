@@ -11,7 +11,7 @@ executors:
     working_directory: ~/app
   terraform-exec:
     docker:
-        - image: hashicorp/terraform:latest
+        - image: hashicorp/terraform:light
   slack-exec:
     docker:
       - image: cimg/base:stable        
