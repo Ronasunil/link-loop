@@ -122,7 +122,7 @@ variable "code_deploy_role_name" {
 variable "prefix" {
   description = "prefix"
   type        = string
-  default     = "linkloop"
+  default     = "link-loop"
 }
 
 

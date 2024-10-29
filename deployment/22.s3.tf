@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "code_deploy" {
-  bucket = "code-deploy-backend-1"
+  bucket = "${local.prefix}-backend"
 
   tags = {
     Name        = "link-loop-bucket"
@@ -16,6 +16,7 @@ resource "aws_s3_bucket" "code_deploy" {
 
 resource "aws_s3_bucket_ownership_controls" "code_deploy_ownership" {
   bucket = aws_s3_bucket.code_deploy.id
+  
   
   rule {
     object_ownership = "BucketOwnerPreferred"
