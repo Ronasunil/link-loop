@@ -24,7 +24,7 @@ aliases:
         command: echo ${CIRCLE_BRANCH}
 
     - &get_cache
-      restor_cache:
+      restore_cache:
         keys:
          - node-deps-{{checksum "package.json"}}
          - node-deps- 
