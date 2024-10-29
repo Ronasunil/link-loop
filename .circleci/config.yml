@@ -11,7 +11,7 @@ executors:
     working_directory: ~/repo
   terraform-exec:
     docker:
-        - image: hashicorp/terraform:light
+        - image: hashicorp/terraform:light    
   slack-exec:
     docker:
       - image: cimg/base:stable        
@@ -65,6 +65,10 @@ jobs:
     executor: terraform-exec
     steps:
       - checkout
+      - run:
+          name: "Install bash"
+          command: |
+            apk add --no-cache bash
       - *current_branch
       - run:
           name: terraform validation and formatting
