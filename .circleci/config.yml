@@ -5,50 +5,46 @@ version: 2.1
 executors:
   app-exec:
     docker:
-        - image: cimg/node:20.13.1
-        - image: cimg/redis:7.2.4
-        - image: cimg/base:2024.10
+      - image: cimg/node:20.13.1
+      - image: cimg/redis:7.2.4
+      - image: cimg/base:2024.10
     working_directory: ~/app
   terraform-exec:
     docker:
-        - image: hashicorp/terraform:latest
+      - image: hashicorp/terraform:latest
   slack-exec:
     docker:
-      - image: cimg/base:stable        
-
+      - image: cimg/base:stable
 
 aliases:
-    - &current_branch
-      run:
-        name: "Show current branch"
-        command: echo ${CIRCLE_BRANCH}
+  - &current_branch
+    run:
+      name: 'Show current branch'
+      command: echo ${CIRCLE_BRANCH}
 
-    - &get_cache
-      restor_cache:
-        keys:
-         - node-deps-{{checksum "package.json"}}
-         - node-deps- 
-    - &add_cache  
-      save_cache:
-        key: node-deps-{{checksum "package.json"}}
-        paths: 
-         - node_modules   
-    - &zip_project
-      run:
-        name: "zip project"
-        command: zip -r link-loop.zip . -x \"node_modules/*\" \"build\" \".git\" \"config.env\" \"config.env.development\"  \"deployment/.terraform/*\" \"deployment/.terraform.lock.hcl\"
-    - &install_deps
-      run:
-        name: "Install project dependencies"
-        command: npm install
-    - &fail_notification
-      slack/notify:
-          event: fail
-          channel: "link-loop-notifications"
-          template: "basic_fail_1"
-          
-
-
+  - &get_cache
+    restor_cache:
+      keys:
+        - node-deps-{{checksum "package.json"}}
+        - node-deps-
+  - &add_cache
+    save_cache:
+      key: node-deps-{{checksum "package.json"}}
+      paths:
+        - node_modules
+  - &zip_project
+    run:
+      name: 'zip project'
+      command: zip -r link-loop.zip . -x \"node_modules/*\" \"build\" \".git\" \"config.env\" \"config.env.development\"  \"deployment/.terraform/*\" \"deployment/.terraform.lock.hcl\"
+  - &install_deps
+    run:
+      name: 'Install project dependencies'
+      command: npm install
+  - &fail_notification
+    slack/notify:
+      event: fail
+      channel: 'link-loop-notifications'
+      template: 'basic_fail_1'
 
 jobs:
   dep-install:
@@ -67,8 +63,8 @@ jobs:
       - checkout
       - *current_branch
       - run:
-          name: "terraform validation and formatting"
-          command: | 
+          name: 'terraform validation and formatting'
+          command: |
             cd deployment/
             terraform init -backend=false
             terraform validate
@@ -81,19 +77,19 @@ jobs:
       - checkout
       - *current_branch
       - run:
-          name: "terraform planning"
+          name: 'terraform planning'
           command: |
             cd deployment/
             terraform init
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
             terraform plan
       - run:
-          name: "terraform applying"
+          name: 'terraform applying'
           command: |
             cd deployment/
             terraform workspace select ${CIRCLE_BRANCH}
             terraform apply -auto-approve
-      - *fail_notification    
+      - *fail_notification
 
   s3-upload:
     executor: aws-cli/default
@@ -102,9 +98,9 @@ jobs:
       - aws-cli/setup:
           profile_name: default
       - *current_branch
-      - *zip_project  
+      - *zip_project
       - run:
-          name: "uploading file to s3"
+          name: 'uploading file to s3'
           command: |
             aws s3 cp link-loop.zip s3://link-loop-${CIRCLE_BRANCH}-backend
       - *fail_notification
@@ -117,7 +113,7 @@ jobs:
           profile_name: default
       - *current_branch
       - run:
-          name: "Deploying updated code with codedeploy"
+          name: 'Deploying updated code with codedeploy'
           command: |
             if ["${CODE_DEPLOY_UPDATE}" == "true"]; then
               aws deploy create-deployment \
@@ -132,9 +128,8 @@ jobs:
     steps:
       - slack/notify:
           event: always
-          channel: "link-loop-notifications"
-          template: "basic_success_1"
-        
+          channel: 'link-loop-notifications'
+          template: 'basic_success_1'
 
   terraform-destroy:
     executor: terraform-exec
@@ -142,13 +137,13 @@ jobs:
       - checkout
       - *current_branch
       - run:
-          name: "Destroy aws resource"
+          name: 'Destroy aws resource'
           command: |
             cd deployment/
             terraform init
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace select ${CIRCLE_BRANCH}
             terraform-destroy -auto-approve
-      - *fail_notification      
+      - *fail_notification
 
 workflows:
   build_and_deploy:
@@ -159,7 +154,7 @@ workflows:
             - dep-install
           filters:
             branches:
-              only: 
+              only:
                 - development
                 - stagging
                 - main
@@ -171,7 +166,7 @@ workflows:
               only:
                 - development
                 - stagging
-                - main                
+                - main
       - s3-upload:
           requires:
             - terraform-plan-apply
@@ -180,7 +175,7 @@ workflows:
               only:
                 - development
                 - stagging
-                - main 
+                - main
       - code-deploy:
           requires:
             - s3-upload
@@ -189,7 +184,7 @@ workflows:
               only:
                 - development
                 - stagging
-                - main 
+                - main
       - success-notification:
           requires:
             - code-deploy
@@ -198,7 +193,7 @@ workflows:
               only:
                 - development
                 - stagging
-                - main             
+                - main
       - hold:
           type: approval
           requires:
@@ -211,5 +206,4 @@ workflows:
               only:
                 - development
                 - stagging
-                - main                      
-            
+                - main
