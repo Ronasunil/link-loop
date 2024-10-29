@@ -68,6 +68,7 @@ jobs:
       - *current_branch
       - run:
           name: terraform validation and formatting
+          shell: /bin/sh
           command: | 
             cd deployment/
             terraform init -backend=false
@@ -84,6 +85,7 @@ jobs:
           docker_layer_caching: false
       - run:
           name: "terraform planning"
+          shell: /bin/sh
           command: |
             cd deployment/
             terraform init
@@ -91,6 +93,7 @@ jobs:
             terraform plan
       - run:
           name: "terraform applying"
+          shell: /bin/sh
           command: |
             cd deployment/
             terraform workspace select ${CIRCLE_BRANCH}
