@@ -66,10 +66,8 @@ jobs:
     steps:
       - checkout
       - *current_branch
-      - setup_remote_docker:
-          docker_layer_caching: false
       - run:
-          name: "terraform validation and formatting"
+          name: terraform validation and formatting
           command: | 
             cd deployment/
             terraform init -backend=false
