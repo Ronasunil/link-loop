@@ -97,14 +97,14 @@ sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --u
 sudo mkdir /home/ubuntu/project
 cd /home/ubuntu/project
 
-git clone -b stagging https://github.com/Ronasunil/link-loop.git
+git clone -b production https://github.com/Ronasunil/link-loop.git
 cd link-loop
 
-sudo aws s3 sync s3://link-loop-env/stagging .
+sudo aws s3 sync s3://link-loop-env/production .
 sudo apt install unzip
 sudo unzip env-file.zip
-sudo cp config.env.stagging config.env
-sudo rm -rf config.env.stagging
+sudo cp config.env.production config.env
+sudo rm -rf config.env.production
 
 sudo npm install
 sudo npm run build

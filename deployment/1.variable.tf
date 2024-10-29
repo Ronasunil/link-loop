@@ -14,7 +14,7 @@ variable "main_domain" {
 variable "dev_api_domain" {
   description = "Dev api domain"
   type        = string
-  default     = "api.stagging.expora.info"
+  default     = "api.production.expora.info"
 }
 
 
