@@ -1,0 +1,215 @@
+orbs:
+  aws-cli: circleci/aws-cli@5.1.1
+  slack: circleci/slack@5.0.0
+version: 2.1
+executors:
+  app-exec:
+    docker:
+        - image: cimg/node:20.13.1
+        - image: cimg/redis:7.2.4
+        - image: cimg/base:2024.10
+    working_directory: ~/app
+  terraform-exec:
+    docker:
+        - image: hashicorp/terraform:latest
+  slack-exec:
+    docker:
+      - image: cimg/base:stable        
+
+
+aliases:
+    - &current_branch
+      run:
+        name: "Show current branch"
+        command: echo ${CIRCLE_BRANCH}
+
+    - &get_cache
+      restor_cache:
+        keys:
+         - node-deps-{{checksum "package.json"}}
+         - node-deps- 
+    - &add_cache  
+      save_cache:
+        key: node-deps-{{checksum "package.json"}}
+        paths: 
+         - node_modules   
+    - &zip_project
+      run:
+        name: "zip project"
+        command: zip -r link-loop.zip . -x \"node_modules/*\" \"build\" \".git\" \"config.env\" \"config.env.development\"  \"deployment/.terraform/*\" \"deployment/.terraform.lock.hcl\"
+    - &install_deps
+      run:
+        name: "Install project dependencies"
+        command: npm install
+    - &fail_notification
+      slack/notify:
+          event: fail
+          channel: "link-loop-notifications"
+          template: "basic_fail_1"
+          
+
+
+
+jobs:
+  dep-install:
+    executor: app-exec
+    steps:
+      - checkout
+      - *current_branch
+      - *get_cache
+      - *install_deps
+      - *add_cache
+      - *fail_notification
+
+  terraform-validate:
+    executor: terraform-exec
+    steps:
+      - checkout
+      - *current_branch
+      - run:
+          name: "terraform validation and formatting"
+          command: | 
+            cd deployment/
+            terraform init -backend=false
+            terraform validate
+            terraform fmt
+      - *fail_notification
+
+  terraform-plan-apply:
+    executor: terraform-exec
+    steps:
+      - checkout
+      - *current_branch
+      - run:
+          name: "terraform planning"
+          command: |
+            cd deployment/
+            terraform init
+            terraform workspace select ${CIRCLE_BRANCH} || terraform workspace new ${CIRCLE_BRANCH}
+            terraform plan
+      - run:
+          name: "terraform applying"
+          command: |
+            cd deployment/
+            terraform workspace select ${CIRCLE_BRANCH}
+            terraform apply -auto-approve
+      - *fail_notification    
+
+  s3-upload:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile_name: default
+      - *current_branch
+      - *zip_project  
+      - run:
+          name: "uploading file to s3"
+          command: |
+            aws s3 cp link-loop.zip s3://link-loop-${CIRCLE_BRANCH}-backend
+      - *fail_notification
+
+  code-deploy:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile_name: default
+      - *current_branch
+      - run:
+          name: "Deploying updated code with codedeploy"
+          command: |
+            if ["${CODE_DEPLOY_UPDATE}" == "true"]; then
+              aws deploy create-deployment \
+                --application-name link-loop-${CIRCLE_BRANCH}-app \
+                --deployment-config-name CodeDeployDefault.AllAtOnce \
+                --deployment-group-name link-loop-${CIRCLE_BRANCH}-group \
+                --s3-location bucket=link-loop-${CIRCLE_BRANCH}-backend,bundleType=zip,key=link-loop.zip
+      - *fail_notification
+
+  success-notification:
+    executor: slack-exec
+    steps:
+      - slack/notify:
+          event: always
+          channel: "link-loop-notifications"
+          template: "basic_success_1"
+        
+
+  terraform-destroy:
+    executor: terraform-exec
+    steps:
+      - checkout
+      - *current_branch
+      - run:
+          name: "Destroy aws resource"
+          command: |
+            cd deployment/
+            terraform init
+            terraform workspace select ${CIRCLE_BRANCH} || terraform workspace select ${CIRCLE_BRANCH}
+            terraform-destroy -auto-approve
+      - *fail_notification      
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - dep-install
+      - terraform-validate:
+          requires:
+            - dep-install
+          filters:
+            branches:
+              only: 
+                - development
+                - stagging
+                - main
+      - terraform-plan-apply:
+          requires:
+            - terraform-validate
+          filters:
+            branches:
+              only:
+                - development
+                - stagging
+                - main                
+      - s3-upload:
+          requires:
+            - terraform-plan-apply
+          filters:
+            branches:
+              only:
+                - development
+                - stagging
+                - main 
+      - code-deploy:
+          requires:
+            - s3-upload
+          filters:
+            branches:
+              only:
+                - development
+                - stagging
+                - main 
+      - success-notification:
+          requires:
+            - code-deploy
+          filters:
+            branches:
+              only:
+                - development
+                - stagging
+                - main             
+      - hold:
+          type: approval
+          requires:
+            - success-notification
+      - terraform-destroy:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - development
+                - stagging
+                - main                      
+            
