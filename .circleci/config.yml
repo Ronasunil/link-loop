@@ -66,6 +66,9 @@ jobs:
     steps:
       - checkout
       - *current_branch
+      - setup_remote_docker:
+          docker_layer_caching: false
+          version: 20.10.12
       - run:
           name: "terraform validation and formatting"
           command: | 
@@ -80,6 +83,9 @@ jobs:
     steps:
       - checkout
       - *current_branch
+      - setup_remote_docker:
+          docker_layer_caching: false
+          version: 20.10.12      
       - run:
           name: "terraform planning"
           command: |
