@@ -54,6 +54,7 @@ aliases:
 
 
 
+
 jobs:
   dep-install:
     executor: app-exec
@@ -136,6 +137,7 @@ jobs:
                 --deployment-config-name CodeDeployDefault.AllAtOnce \
                 --deployment-group-name link-loop-${CIRCLE_BRANCH}-group \
                 --s3-location bucket=link-loop-${CIRCLE_BRANCH}-backend,bundleType=zip,key=link-loop.zip
+            fi
       - *fail_notification
 
   success-notification:
