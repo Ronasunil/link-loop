@@ -8,10 +8,10 @@ executors:
       - image: cimg/node:20.13.1
       - image: cimg/redis:7.2.4
       - image: cimg/base:2024.10
-    working_directory: ~/app
+    working_directory: ~/repo
   terraform-exec:
     docker:
-      - image: hashicorp/terraform:latest
+      - image: hashicorp/terraform:light
   slack-exec:
     docker:
       - image: cimg/base:stable
@@ -23,7 +23,7 @@ aliases:
       command: echo ${CIRCLE_BRANCH}
 
   - &get_cache
-    restor_cache:
+    restore_cache:
       keys:
         - node-deps-{{checksum "package.json"}}
         - node-deps-
@@ -40,6 +40,10 @@ aliases:
     run:
       name: 'Install project dependencies'
       command: npm install
+  - &install_sh
+    run:
+      name: 'Install sh'
+      command: apk add --no-cache bash
   - &fail_notification
     slack/notify:
       event: fail
@@ -61,9 +65,11 @@ jobs:
     executor: terraform-exec
     steps:
       - checkout
+      - *install_sh
       - *current_branch
       - run:
-          name: 'terraform validation and formatting'
+          name: terraform validation and formatting
+          shell: /bin/sh
           command: |
             cd deployment/
             terraform init -backend=false
@@ -76,8 +82,12 @@ jobs:
     steps:
       - checkout
       - *current_branch
+      - *install_sh
+      - setup_remote_docker:
+          docker_layer_caching: false
       - run:
           name: 'terraform planning'
+          shell: /bin/sh
           command: |
             cd deployment/
             terraform init
@@ -85,6 +95,7 @@ jobs:
             terraform plan
       - run:
           name: 'terraform applying'
+          shell: /bin/sh
           command: |
             cd deployment/
             terraform workspace select ${CIRCLE_BRANCH}
@@ -121,6 +132,7 @@ jobs:
                 --deployment-config-name CodeDeployDefault.AllAtOnce \
                 --deployment-group-name link-loop-${CIRCLE_BRANCH}-group \
                 --s3-location bucket=link-loop-${CIRCLE_BRANCH}-backend,bundleType=zip,key=link-loop.zip
+            fi
       - *fail_notification
 
   success-notification:
@@ -136,13 +148,14 @@ jobs:
     steps:
       - checkout
       - *current_branch
+      - *install_sh
       - run:
           name: 'Destroy aws resource'
           command: |
             cd deployment/
             terraform init
             terraform workspace select ${CIRCLE_BRANCH} || terraform workspace select ${CIRCLE_BRANCH}
-            terraform-destroy -auto-approve
+            terraform destroy -auto-approve
       - *fail_notification
 
 workflows:
