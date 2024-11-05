@@ -17,9 +17,9 @@ export class ResetPasswordMailWorker {
 
   async prepareQueue(data: mailTo, userDetails: forgotPasswordTemplateData) {
     const templatePath = path.join(`${__dirname}/../services/email/forgotPassword/forgotPasswordTemplate.ejs`);
-
+    console.log(userDetails);
     const body = await ejs.renderFile(templatePath, userDetails);
-    this.mailQueue.addToQueue({ ...data, body });
+    await this.mailQueue.addToQueue({ ...data, body });
   }
 
   async sendResetMail(job: Job) {

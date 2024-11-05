@@ -16,8 +16,8 @@ resource "aws_s3_bucket" "code_deploy" {
 
 resource "aws_s3_bucket_ownership_controls" "code_deploy_ownership" {
   bucket = aws_s3_bucket.code_deploy.id
-  
-  
+
+
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
@@ -26,8 +26,8 @@ resource "aws_s3_bucket_ownership_controls" "code_deploy_ownership" {
 
 resource "aws_s3_bucket_acl" "code_deploy_backend_acl" {
   depends_on = [aws_s3_bucket_ownership_controls.code_deploy_ownership]
-  bucket = aws_s3_bucket.code_deploy.id
-  acl    = "private"
+  bucket     = aws_s3_bucket.code_deploy.id
+  acl        = "private"
 }
 
 

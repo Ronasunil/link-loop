@@ -27,6 +27,7 @@ class Config {
   public BREVO_PASSWORD: string | undefined;
   public PAGE_lIMIT: number | undefined;
   public DEFAULT_PROFILE_IMG: string | undefined;
+  public BREVO_SENDER_EMAIL: string | undefined;
 
   constructor() {
     this.loadConfig();
@@ -54,6 +55,7 @@ class Config {
     this.BREVO_EMAIL = process.env.BREVO_EMAIL;
     this.BREVO_PORT = Number.parseInt(process.env.BREVO_PORT!);
     this.BREVO_PASSWORD = process.env.BREVO_PASSWORD;
+    this.BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
 
     this.DEFAULT_PROFILE_IMG = process.env.DEFAULT_PROFILE_IMG;
     this.PAGE_lIMIT = Number.parseInt(process.env.PAGE_LIMIT!);

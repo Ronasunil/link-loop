@@ -56,8 +56,7 @@ export class Signup {
     await userCache.addUser(userData);
 
     // token generation and adding to session
-    const token = AuthService.signToken({ userName, email, _id: userId, avatarImage, authId });
-
+    const token = AuthService.signToken({ userName, email, _id: userId, avatarColor, authId });
     req.session = { token };
 
     // saving to db

@@ -21,8 +21,8 @@ export class Middlewares {
 
     try {
       const payload = jwt.verify(req.session.token, config.JWT_SECRET!) as authPayload;
-
       req.currentUser = payload;
+
       next();
     } catch (err) {
       throw new NotAuthorizedError('Token not exist');

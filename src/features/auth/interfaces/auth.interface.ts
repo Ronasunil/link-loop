@@ -26,7 +26,7 @@ export interface authPayload {
   _id: string | mongoose.Types.ObjectId;
   userName: string;
   email: string;
-  avatarImage: string;
+  avatarColor: string;
   authId: string | mongoose.Types.ObjectId;
 }
 

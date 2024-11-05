@@ -1,5 +1,5 @@
 resource "aws_codedeploy_app" "link_loop_code_deploy" {
-  name             =  "${local.prefix}-app"
+  name             = "${local.prefix}-app"
   compute_platform = "Server"
 
 
@@ -11,11 +11,11 @@ resource "aws_codedeploy_app" "link_loop_code_deploy" {
 
 
 resource "aws_codedeploy_deployment_group" "codedeploy_grp" {
-  app_name              = aws_codedeploy_app.link_loop_code_deploy.name
-  deployment_group_name = "${local.prefix}-group"
-  service_role_arn      = aws_iam_role.codedeploy_iam_role.arn
+  app_name               = aws_codedeploy_app.link_loop_code_deploy.name
+  deployment_group_name  = "${local.prefix}-group"
+  service_role_arn       = aws_iam_role.codedeploy_iam_role.arn
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
-  autoscaling_groups = [ aws_autoscaling_group.ec2_autoscaling.name ]
+  autoscaling_groups     = [aws_autoscaling_group.ec2_autoscaling.name]
   auto_rollback_configuration {
     enabled = true
     events  = ["DEPLOYMENT_FAILURE"]
