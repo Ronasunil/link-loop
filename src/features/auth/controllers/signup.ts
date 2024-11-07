@@ -63,7 +63,7 @@ export class Signup {
     new AuthWorker().saveToDb(Signup.prototype.authData(req, authId));
     new SignupWorker().saveToDb(Signup.prototype.userData(authId, userId, userName));
 
-    res.status(httpStatus.CREATED).json({ message: 'success', user: userData });
+    res.status(httpStatus.CREATED).json({ message: 'success', user: userData, token });
   }
 
   private redisUserData(authObj: authAttrs): redisUserAttrs {

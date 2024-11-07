@@ -33,13 +33,13 @@ class Login {
     const token = AuthService.signToken(Login.prototype.getTokenPaylod(auth, user));
     req.session = { token };
 
-    res.status(httpStatus.OK).json({ message: 'Login successfull', user });
+    res.status(httpStatus.OK).json({ message: 'Login successfull', user, token });
   }
 
   private getTokenPaylod(data: authDoc, userData: userDoc): authPayload {
-    const { userName, email, avatarImage, _id } = data;
+    const { userName, email, _id, avatarColor } = data;
 
-    return { userName, email, _id: userData._id, avatarImage, authId: _id };
+    return { userName, email, _id: userData._id, avatarColor, authId: _id };
   }
 }
 
