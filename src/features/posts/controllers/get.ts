@@ -10,7 +10,6 @@ import {
   reqForGetPostById,
   reqForGetPostImgByAuthId,
 } from '@post/interfaces/postInterfaces';
-import { cache } from 'joi';
 
 class Get {
   async posts(req: reqForGetAllPostsProps, res: Response) {
@@ -18,6 +17,7 @@ class Get {
     const { skip, limit } = Helpers.paginate(pageNo);
 
     const cachePosts = await postCache.getAllPost(skip, limit);
+    console.log('cachePost', cachePosts);
     const posts = cachePosts.length ? cachePosts : await PostService.getAllPostsDb(skip, limit);
 
     res.status(httpStatus.OK).json({ posts });

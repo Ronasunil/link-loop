@@ -21,11 +21,11 @@ export class PostWorker {
   }
 
   deletePost(): void {
-    console.log('macho here it gets');
     this.postQueue.processQueue(this.deletePostFn);
   }
 
   async prepareQueueForCreation(data: postAttrs): Promise<this> {
+    console.log('.', data);
     await this.postQueue.addToQueue(data);
     return this;
   }

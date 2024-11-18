@@ -11,7 +11,7 @@ class CurrentUser {
     const user = cacheUser ? cacheUser : AuthService.getUserByid(req.currentUser?._id as string);
 
     if (!user) throw new NotAuthorizedError('Unauthorized access');
-    res.status(httpStatus.OK).json({ user });
+    res.status(httpStatus.OK).json({ user, token: req.session!.token });
   }
 }
 

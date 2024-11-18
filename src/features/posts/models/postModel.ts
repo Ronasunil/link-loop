@@ -16,11 +16,21 @@ const postSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  username: String,
   email: String,
+  text: String,
 
   authId: {
+    required: true,
     type: mongoose.Types.ObjectId,
     ref: 'Auth',
+    index: true,
+  },
+
+  userId: {
+    required: true,
+    type: mongoose.Types.ObjectId,
+    ref: 'User',
     index: true,
   },
 

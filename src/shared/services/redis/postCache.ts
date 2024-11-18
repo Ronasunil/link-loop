@@ -16,7 +16,7 @@ class PostCache extends BaseCache {
     await this.client.sadd(`auth:${authId}`, `post:${postId}`);
 
     // add all postIds
-    await this.client.sadd('postIds', `posts:${postId}`);
+    await this.client.sadd('postIds', `post:${postId}`);
   }
 
   async getPostsByAuthId(authId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
@@ -92,7 +92,7 @@ class PostCache extends BaseCache {
       posts.push(JSON.parse(postJson));
     }
 
-    return posts;
+    return posts.slice(skip, limit);
   }
 
   async getUsersPost(authId: string): Promise<string[]> {

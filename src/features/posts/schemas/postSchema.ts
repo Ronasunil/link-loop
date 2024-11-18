@@ -1,4 +1,4 @@
-import Joi, { required } from 'joi';
+import Joi from 'joi';
 
 export const postSchema = Joi.object({
   content: Joi.string().required().allow(null, ''),
@@ -6,11 +6,10 @@ export const postSchema = Joi.object({
   feelings: Joi.string().required().allow(null, ''),
   profilePic: Joi.string().required().allow(null, ''),
   privacy: Joi.string().required().valid('unlisted', 'public', 'private'),
-  gifUrl: Joi.string().required().allow(null, ''),
 });
 
 export const postWithImageSchema = Joi.object({
-  image: Joi.string().required(),
+  image: Joi.string().required().allow(null, ''),
   bgColor: Joi.string().required().allow(null, ''),
   feelings: Joi.string().required().allow(null, ''),
   profilePic: Joi.string().required().allow(null, ''),
@@ -25,6 +24,7 @@ export const postWithVideoSchema = Joi.object({
   profilePic: Joi.string().required().allow(null, ''),
   privacy: Joi.string().required().valid('unlisted', 'public', 'private'),
   gifUrl: Joi.string().required().allow(null, ''),
+  text: Joi.string().optional(),
 });
 
 export const postUpdationSchema = Joi.object({
@@ -45,4 +45,5 @@ export const postUpdationSchema = Joi.object({
     angry: Joi.number().required().default(0),
     laugh: Joi.number().required().default(0),
   }).optional(),
+  text: Joi.string().optional(),
 });

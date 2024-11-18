@@ -18,8 +18,9 @@ import { BadRequestError } from '@global/helpers/errorHandler';
 class Post {
   async create(req: reqWithPostProps, res: Response) {
     const postData = Post.prototype.getPostData(req.body, req);
-    console.log(req.currentUser);
+
     postSocketIo.emit('add-post', postData);
+
     await postCache.addPost(postData);
     const postWorker = await new PostWorker().prepareQueueForCreation(postData);
     postWorker.addPost();
@@ -27,16 +28,26 @@ class Post {
   }
 
   async createWithImage(req: reqWithPostImageProps, res: Response) {
-    const { image } = req.body;
-    // uploading file to cloudinary
-    const result = await cloudinaryUploader.imageUpload(image);
-    if (!result?.public_id) throw new BadRequestError('File upload failed: Try again');
+    const { image, gifUrl } = req.body;
+    let postData: postAttrs;
 
-    // getting formatted data for saving to redis
-    const postData = Post.prototype.getPostWithImgData(req.body, req, {
-      imageId: result?.public_id!,
-      imageVersion: result?.version.toString()!,
-    });
+    if (image && !gifUrl) {
+      // uploading file to cloudinary
+      const result = await cloudinaryUploader.imageUpload(image);
+      if (!result?.public_id) throw new BadRequestError('File upload failed: Try again');
+
+      // getting formatted data for saving to redis
+      postData = Post.prototype.getPostWithImgData(req.body, req, {
+        imageId: result?.public_id!,
+        imageVersion: result?.version.toString()!,
+      });
+    } else {
+      // getting formatted data for saving to redis
+      postData = Post.prototype.getPostWithImgData(req.body, req, {
+        imageId: '',
+        imageVersion: '',
+      });
+    }
 
     postSocketIo.emit('add-post', postData);
     await postCache.addPost(postData);
@@ -69,17 +80,16 @@ class Post {
       privacy,
       gifUrl,
       profilePic,
-      image,
+      userId: req.currentUser!._id,
+      username: req.currentUser!.userName,
       imageId,
       videoId: '',
       videoVersion: '',
       imageVersion,
       _id,
-      // @ts-ignore
-      authId: req.currentUser?.authId,
+      authId: req.currentUser!.authId,
       createdAt: new Date(),
-      // @ts-ignore
-      email: req.currentUser?.email,
+      email: req.currentUser!.email,
       reactions: {
         like: 0,
         sad: 0,
@@ -104,11 +114,11 @@ class Post {
       gifUrl,
       profilePic,
       _id,
-      // @ts-ignore
-      authId: req!.currentUser?.authId,
+      username: req.currentUser!.userName,
+      userId: req.currentUser!._id,
+      authId: req.currentUser!.authId,
       createdAt: new Date(),
-      // @ts-ignore
-      email: req!.currentUser?.email,
+      email: req.currentUser!.email,
       imageId: '',
       imageVersion: '',
       videoId: '',
@@ -139,11 +149,13 @@ class Post {
       bgColor,
       feelings,
       privacy,
+      username: req.currentUser!.userName,
       gifUrl,
       profilePic,
       _id,
       // @ts-ignore
       authId: req.currentUser!.authId,
+      userId: req.currentUser!._id,
       createdAt: new Date(),
       // @ts-ignore
       email: req.currentUser!.email,
