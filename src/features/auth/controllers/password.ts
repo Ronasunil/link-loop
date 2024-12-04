@@ -38,7 +38,7 @@ class Password {
     // sending mail
     new ResetPasswordMailWorker().prepareQueue(
       { subject: 'Action Required: Reset Your Password', to: auth.email, body: '' },
-      { resetLink: `${config.CLIENT_URL}/resetToken/${token}`, username: auth.userName }
+      { resetLink: `${config.CLIENT_URL}/reset-password/${token}`, username: auth.userName }
     );
 
     res.status(httpStatus.OK).json({ message: 'Email sent' });

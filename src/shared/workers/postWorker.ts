@@ -21,11 +21,11 @@ export class PostWorker {
   }
 
   deletePost(): void {
-    console.log('macho here it gets');
     this.postQueue.processQueue(this.deletePostFn);
   }
 
   async prepareQueueForCreation(data: postAttrs): Promise<this> {
+    console.log('.', data);
     await this.postQueue.addToQueue(data);
     return this;
   }
@@ -37,7 +37,7 @@ export class PostWorker {
 
   async prepareQueueForDeletion(postId: string): Promise<this> {
     console.log('hereee');
-    await this.postQueue.addToQueue(postId);
+    await this.postQueue.addToQueue({ postId });
     return this;
   }
 
@@ -54,7 +54,7 @@ export class PostWorker {
   }
 
   async deletePostFn(job: Job): Promise<void> {
-    const postId = job.data as string;
+    const { postId } = job.data as { postId: string };
     await PostService.deletePostsDb(postId);
   }
 }

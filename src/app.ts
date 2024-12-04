@@ -44,7 +44,7 @@ export class App {
     app.use(hpp());
 
     // prettier-ignore
-    app.use(cors({origin:"*", credentials:true , methods:["GET", "PATCH", "POST", "OPTIONS", "DELETE"]}));
+    app.use(cors({origin:"http://localhost:5173", credentials:true , methods:["GET", "PATCH", "POST", "OPTIONS", "DELETE"]}));
   }
 
   private globalMiddlewares(app: Application): void {}

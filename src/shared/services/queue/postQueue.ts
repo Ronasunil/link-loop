@@ -6,6 +6,7 @@ export class PostQueue extends BaseQueue {
     super(queueName);
   }
   async addToQueue(data: any): Promise<void> {
+    console.log('queue adding', data);
     await this.queue.add(this.queue.name, data, { attempts: 3, delay: 1000 });
   }
 
@@ -15,11 +16,11 @@ export class PostQueue extends BaseQueue {
     });
 
     worker.on('completed', (job: Job) => {
-      console.log(`post creation worker completed it's job ${job}`);
+      console.log(`post  worker completed it's job ${job}`);
     });
 
     worker.on('failed', (_job, err) => {
-      console.log(`post crreation worker failed, ${err}`);
+      console.log(`post worker failed, ${err}`);
     });
   }
 }

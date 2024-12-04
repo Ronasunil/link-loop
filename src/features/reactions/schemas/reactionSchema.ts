@@ -12,5 +12,5 @@ export const addReactionSchema = Joi.object({
     'any.required': 'userTo is missing',
   }),
 
-  reactionType: Joi.string().required().valid('like', 'sad', 'laugh', 'wow', 'angry'),
+  reactionType: Joi.string().required().valid('like', 'sad', 'happy', 'love', 'wow', 'angry'),
 });

@@ -16,8 +16,8 @@ class Create {
   async chat(req: reqForChat, res: Response) {
     const chat = await Create.prototype.chatData(req);
 
-    chatSocket.emit('message', chat);
-    chatSocket.emit('chat list', chat);
+    chatSocket.emit('message', chat, { senderId: chat.senderId, reciverId: chat.reciverId });
+    chatSocket.emit('chat list', chat, { senderId: chat.senderId, reciverId: chat.reciverId });
 
     await chatCache.addChat(chat.conversationId, chat);
     await chatCache.addConversation(chat.senderId, chat.reciverId, chat.conversationId);
@@ -25,7 +25,7 @@ class Create {
     const chatWorker = await new ChatWorker().prepareQueueForChatCreation(chat);
     chatWorker.addChat();
 
-    res.status(httpStatus.OK).json({ message: 'Chat sent' });
+    res.status(httpStatus.OK).json({ message: 'Chat sent', chat });
   }
 
   async chatUser(req: reqForAddingChatUsers, res: Response) {
@@ -51,7 +51,7 @@ class Create {
     }
 
     const user = await userCache.getUser(req.currentUser!._id.toString());
-    console.log(user.profileImg, user);
+
     const chatData: chatAttrs = {
       _id: chatId,
       conversationId: conversationObjectId,
@@ -68,6 +68,7 @@ class Create {
       isRead: false,
       reaction: [],
       message,
+      isDelivered: false,
       createdAt: new Date(),
     };
 

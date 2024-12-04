@@ -7,7 +7,11 @@ import { config } from '@utils/config';
 
 class Get {
   health(_req: Request, res: Response) {
+<<<<<<< HEAD
     res.status(httpStatus.OK).send(`Instance running on process of ${process.pid} is healthyy`);
+=======
+    res.status(httpStatus.OK).send(`Instance running on process of ${process.pid} is healthy`);
+>>>>>>> stagging
   }
 
   env(_req: Request, res: Response) {

@@ -18,14 +18,14 @@ class ChatCache extends BaseCache {
     const chatsJson = (await this.client.hget('chats', conversationId)) || JSON.stringify([]);
     const chats = JSON.parse(chatsJson) as chatAttrs[];
 
-    chats.unshift(data);
+    chats.push(data);
     this.client.hset('chats', conversationId, JSON.stringify(chats));
   }
 
   async getChatByConversationId(conversationId: string): Promise<chatAttrs[]> {
     const chatsJson = (await this.client.hget('chats', conversationId)) || JSON.stringify([]);
-    const chats = JSON.parse(chatsJson) as chatAttrs[];
 
+    const chats = JSON.parse(chatsJson) as chatAttrs[];
     return chats;
   }
 
@@ -35,6 +35,24 @@ class ChatCache extends BaseCache {
 
     this.client.hset('chats', conversationId, JSON.stringify(updatedChat));
     return updatedChat;
+  }
+
+  async markMessageAsDelivered(userId: string): Promise<void> {
+    const convIds = await this.client.smembers(`userConversations:${userId}`);
+    if (!convIds.length) return;
+    const pipeline = this.client.pipeline();
+
+    for (let id of convIds) {
+      const chats = await this.getChatByConversationId(id);
+
+      const updatedChats = chats.map((chat) =>
+        !chat.isDelivered && chat.reciverId === userId ? { ...chat, isDelivered: true } : chat
+      );
+
+      pipeline.hset('chats', id, JSON.stringify(updatedChats));
+    }
+
+    await pipeline.exec();
   }
 
   async markMessageAsDeleted(conversationId: string, messageId: string, type: deleteType): Promise<chatAttrs[]> {
@@ -110,52 +128,53 @@ class ChatCache extends BaseCache {
   }
 
   async addConversation(senderId: string, receiverId: string, conversationId: string) {
-    const senderConversation = await this.client.lrange(`conversations:${senderId}`, 0, -1);
-    const reciverConversation = await this.client.lrange(`conversations:${receiverId}`, 0, -1);
-
-    console.log(senderConversation, reciverConversation);
+    const senderConversation = await this.client.lrange(`conversationsId:${senderId}`, 0, -1);
+    const reciverConversation = await this.client.lrange(`conversationsId:${receiverId}`, 0, -1);
 
     const promises: Promise<number>[] = [];
 
     const isSenderExist = senderConversation.some(
       (conv) =>
-        JSON.parse(conv).senderId === senderId &&
-        JSON.parse(conv).receiverId === receiverId &&
+        (JSON.parse(conv).senderId === senderId &&
+          JSON.parse(conv).receiverId === receiverId &&
+          JSON.parse(conv).conversationId === conversationId) ||
         JSON.parse(conv).conversationId === conversationId
     );
     const isReciverExist = reciverConversation.some(
       (conv) =>
-        JSON.parse(conv).receiverId === receiverId &&
-        JSON.parse(conv).senderId === senderId &&
+        (JSON.parse(conv).receiverId === receiverId &&
+          JSON.parse(conv).senderId === senderId &&
+          JSON.parse(conv).conversationId === conversationId) ||
         JSON.parse(conv).conversationId === conversationId
     );
 
-    console.log(isSenderExist, isReciverExist);
-
     if (!isSenderExist) {
       promises.push(
-        this.client.lpush(`conversations:${senderId}`, JSON.stringify({ conversationId, receiverId, senderId }))
+        this.client.lpush(`conversationsId:${senderId}`, JSON.stringify({ conversationId, receiverId, senderId }))
       );
     }
 
     if (!isReciverExist) {
       promises.push(
-        this.client.lpush(`conversations:${receiverId}`, JSON.stringify({ conversationId, senderId, receiverId }))
+        this.client.lpush(`conversationsId:${receiverId}`, JSON.stringify({ conversationId, senderId, receiverId }))
       );
     }
+
+    promises.push(this.client.sadd(`userConversations:${senderId}`, conversationId));
+    promises.push(this.client.sadd(`userConversations:${receiverId}`, conversationId));
 
     await Promise.all(promises);
   }
 
   async getConversation(key: string): Promise<chatAttrs[]> {
     const chatList: chatAttrs[] = [];
-    const conversationsJson = await this.client.lrange(`conversations:${key}`, 0, -1);
-
+    const conversationsJson = await this.client.lrange(`conversationsId:${key}`, 0, -1);
+    console.log(conversationsJson, key);
     for (const conversation of conversationsJson) {
       const con = JSON.parse(conversation) as conversation;
 
       const chat = await this.getChatByConversationId(con.conversationId);
-      console.log(chat);
+
       const lastMessage = chat[0];
 
       chatList.push(lastMessage);

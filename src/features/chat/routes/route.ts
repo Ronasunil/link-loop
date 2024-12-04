@@ -40,11 +40,25 @@ class Routes {
 
     this.router.get('/chat/:conversationId', Middlewares.validateToken, Middlewares.currentUserCheck, get.chat);
 
+    this.router.get(
+      '/chat/user/:senderId/:reciverId',
+      Middlewares.validateToken,
+      Middlewares.currentUserCheck,
+      get.chatBySendAndReciverId
+    );
+
     this.router.patch(
       '/chat/seen/:conversationId',
       Middlewares.validateToken,
       Middlewares.currentUserCheck,
       update.markMessageAsSeen
+    );
+
+    this.router.patch(
+      '/chat/delivered/:userId',
+      Middlewares.validateToken,
+      Middlewares.currentUserCheck,
+      update.markMessageAsDelivered
     );
 
     this.router.patch(

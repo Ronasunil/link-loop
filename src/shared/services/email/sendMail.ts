@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer';
-import sendGridMail from '@sendgrid/mail';
 
 import { BadRequestError } from '@global/helpers/errorHandler';
 import { config } from '@utils/config';
@@ -8,14 +7,16 @@ import { mailOptions, mailTo } from '@utils/features/auth/interfaces/auth.interf
 export class SendMail {
   public mailOptions: mailOptions;
   constructor(public emailBody: mailTo) {
+    console.log(`${config.NODE_ENV === 'development' ? config.ETHEREAL_EMAIL : config.BREVO_SENDER_EMAIL}`);
     this.mailOptions = {
-      from: `"LinkLoop, Kerala 👻" <${config.ETHEREAL_EMAIL}>`,
+      from: `"LinkLoop, Kerala 👻" <${config.NODE_ENV === 'development' ? config.ETHEREAL_EMAIL : config.BREVO_SENDER_EMAIL}>`,
       to: emailBody.to,
       subject: emailBody.subject,
       html: emailBody.body,
     };
   }
   protected async developmentMailSender() {
+    console.log(config.ETHEREAL_PASSWORD, config.ETHEREAL_EMAIL);
     const transporter = nodemailer.createTransport({
       host: config.ETHEREAL_HOST,
       port: config.ETHEREAL_PORT,
@@ -34,22 +35,25 @@ export class SendMail {
 
   protected async productionMailSender() {
     const transporter = nodemailer.createTransport({
-      host: config.BREVO_HOST,
+      host: 'smtp-relay.brevo.com',
       port: config.BREVO_PORT,
-      secure: false,
+      secure: true,
       auth: {
         user: config.BREVO_EMAIL,
         pass: config.BREVO_PASSWORD,
       },
     });
 
-    transporter.sendMail(this.mailOptions).catch((err) => {
+    try {
+      const info = await transporter.sendMail(this.mailOptions);
+    } catch (err) {
       console.log(err);
       throw new BadRequestError('Something went wrong');
-    });
+    }
   }
 
   async sendMail() {
+    console.log(config.NODE_ENV, config.NODE_ENV === 'development');
     if (config.NODE_ENV === 'development') this.developmentMailSender();
     else this.productionMailSender();
   }

@@ -25,6 +25,7 @@ export class CommentService {
       // create notification
       const notification = new notificationModel();
       const notificationData = CommentService.prototype.getNotificationData(post, comment, user.userName);
+
       await notification.insertNotification(notificationData);
 
       // emit socket notification

@@ -14,7 +14,7 @@ export class NotificationService {
     return notifications;
   }
 
-  static async updateNotification(notficationId: string): Promise<void> {
-    await notificationModel.findByIdAndUpdate(notficationId, { read: true });
+  static async updateNotification(notficationId: string): Promise<notificationDoc | null> {
+    return await notificationModel.findByIdAndUpdate(notficationId, { read: true }, { new: true, runValidators: true });
   }
 }

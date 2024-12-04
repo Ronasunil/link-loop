@@ -10,7 +10,6 @@ export class FollowerSocket {
 
   listen() {
     this.io.on('connection', (socket: Socket) => {
-      console.log('Follower socket handler');
       socket.on('unfollow user', (data: followerData) => {
         this.io.emit('remove following', data);
       });

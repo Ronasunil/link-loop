@@ -10,7 +10,6 @@ import {
   reqForGetPostById,
   reqForGetPostImgByAuthId,
 } from '@post/interfaces/postInterfaces';
-import { cache } from 'joi';
 
 class Get {
   async posts(req: reqForGetAllPostsProps, res: Response) {
@@ -26,37 +25,36 @@ class Get {
   async postsByAuthId(req: reqForGetPostByAuthId, res: Response) {
     const pageNo = Number.parseInt(req.query?.page || '1');
     const { skip, limit } = Helpers.paginate(pageNo);
-    const { authId } = req.params;
+    const { userId } = req.params;
 
-    const cachePosts = await postCache.getPostsByAuthId(authId, skip, limit);
-    console.log(cachePosts, 'pop', authId);
-    const posts = cachePosts.length ? cachePosts : await PostService.getPostbyAuthIdDb(authId, skip, limit);
+    const cachePosts = await postCache.getPostsByUserId(userId, skip, limit);
+    const posts = cachePosts.length ? cachePosts : await PostService.getPostbyAuthIdDb(userId, skip, limit);
 
     res.status(httpStatus.OK).json({ posts });
   }
 
-  async postsWithImageByAuthId(req: reqForGetPostImgByAuthId, res: Response) {
+  async postsWithImageByUserId(req: reqForGetPostImgByAuthId, res: Response) {
     const pageNo = Number.parseInt(req.query?.page || '1');
     const { skip, limit } = Helpers.paginate(pageNo);
-    const { authId } = req.params;
+    const { userId } = req.params;
 
-    const cachePosts = await postCache.getPostImagesByAuthId(authId, skip, limit);
+    const cachePosts = await postCache.getPostImagesByUserId(userId, skip, limit);
 
-    const posts = cachePosts.length ? cachePosts : await PostService.getPostImagesByAuthIdDb(authId, skip, limit);
+    const posts = cachePosts.length ? cachePosts : await PostService.getPostImagesByAuthIdDb(userId, skip, limit);
 
     res.status(httpStatus.OK).json({ posts });
   }
 
-  async postsWithVideosByAuthId(req: Request, res: Response) {
+  async postsWithVideosByUserId(req: Request, res: Response) {
     const { page } = req.query as { page: string };
-    const { authId } = req.params as { authId: string };
+    const { userId } = req.params as { userId: string };
 
     const pageNo = Number.parseInt(page || '1');
     const { skip, limit } = Helpers.paginate(pageNo);
 
-    const chachePosts = await postCache.getPostVideosByAuthId(authId, skip, limit);
+    const chachePosts = await postCache.getPostVideosByUserId(userId, skip, limit);
 
-    const posts = chachePosts.length ? chachePosts : await PostService.getPostVideoByAuthIdDb(authId, skip, limit);
+    const posts = chachePosts.length ? chachePosts : await PostService.getPostVideoByAuthIdDb(userId, skip, limit);
 
     res.status(httpStatus.OK).json({ message: 'Post with videos', posts });
   }

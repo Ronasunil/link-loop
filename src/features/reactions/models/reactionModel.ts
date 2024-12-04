@@ -27,14 +27,14 @@ const reactionSchema = new mongoose.Schema(
       required: true,
     },
 
-    authId: {
+    userId: {
       type: mongoose.Types.ObjectId,
-      ref: 'Auth',
+      ref: 'User',
     },
 
     reactionType: {
       type: String,
-      enum: ['like', 'sad', 'laugh', 'wow', 'angry'],
+      enum: ['like', 'sad', 'happy', 'love', 'wow', 'angry'],
     },
 
     createdAt: {
