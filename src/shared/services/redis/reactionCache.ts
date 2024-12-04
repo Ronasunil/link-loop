@@ -10,15 +10,15 @@ export class ReactionCache extends BaseCache {
     super();
   }
 
-  async getReaction(postId: string, authId: string): Promise<string | null> {
-    return await this.client.hget(`reaction:${postId}`, authId);
+  async getReaction(postId: string, userId: string): Promise<reactionAttrs | null> {
+    const result = await this.client.hget(`reaction:${postId}`, userId);
+    return result ? JSON.parse(result) : result;
   }
 
   async getReactionByPostId(postId: string, skip: number, limit: number): Promise<reactionAttrs[]> {
     const reactions: reactionAttrs[] = [];
-    let cursor = '0'; // Start cursor for HSCAN
+    let cursor = '0';
 
-    // Use HSCAN to iterate through the hash
     do {
       const [newCursor, items] = await this.client.hscan(`reaction:${postId}`, cursor);
       cursor = newCursor;
@@ -40,7 +40,7 @@ export class ReactionCache extends BaseCache {
   }
 
   async createReaction(data: reactionAttrs): Promise<void> {
-    const { postId, authId } = data;
+    const { postId, userId } = data;
 
     // check if updating the reaction
     const status = await this.updateReaction(data);
@@ -48,19 +48,19 @@ export class ReactionCache extends BaseCache {
 
     // check if its creating (it will create new reaction if no prev reaction exist)
     const reactionJson = JSON.stringify(data);
-    await this.client.hset(`reaction:${postId}`, authId.toString(), reactionJson);
+    await this.client.hset(`reaction:${postId}`, userId.toString(), reactionJson);
+
     await this.updatePostBasedonReaction(data, 'inc');
   }
 
   async updateReaction(data: reactionAttrs): Promise<boolean> {
-    const { postId, authId } = data;
+    const { postId, userId } = data;
 
     // check if reaction exist
-    const reactionJson = await this.getReaction(postId.toString(), authId.toString());
-    if (!reactionJson) return false;
+    const reaction = await this.getReaction(postId.toString(), userId.toString());
+    if (!reaction) return false;
 
     // reaction exist
-    const reaction = JSON.parse(reactionJson) as reactionAttrs;
 
     // deleting when user has selected same reaction twice
     if (reaction.reactionType === data.reactionType) {
@@ -71,17 +71,18 @@ export class ReactionCache extends BaseCache {
 
     // updating existing reaction
     const updatedReactionJson = JSON.stringify({ ...reaction, reactionType: data.reactionType });
-    await this.client.hset(`reaction:${postId}`, authId.toString(), updatedReactionJson);
+    await this.client.hset(`reaction:${postId}`, userId.toString(), updatedReactionJson);
     this.updatePostBasedonReaction(data, 'inc', reaction.reactionType);
     return true;
   }
 
   async deleteReaction(data: reactionAttrs): Promise<void> {
-    const { postId, authId } = data;
-    await this.client.hdel(`reaction:${postId}`, authId.toString());
+    const { postId, userId } = data;
+    await this.client.hdel(`reaction:${postId}`, userId.toString());
   }
 
   private getUpdatedReaction(userReaction: reactionType, reactions: reactions, type: string): reactions {
+    console.log(userReaction, 'userrrr', reactions[userReaction], reactions);
     reactions[userReaction] = type === 'dec' ? reactions[userReaction] - 1 : reactions[userReaction] + 1;
     return reactions;
   }

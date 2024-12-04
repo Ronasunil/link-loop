@@ -21,6 +21,7 @@ export interface chatDoc extends mongoose.Document {
   deleteForMe: Boolean;
   deleteForEveryone: Boolean;
   isRead: Boolean;
+  isDelivered: Boolean;
   createdAt: Date;
   reaction: chatReaction[];
 }
@@ -45,6 +46,7 @@ export interface chatAttrs {
   deleteForMe: Boolean;
   deleteForEveryone: Boolean;
   isRead: Boolean;
+  isDelivered: Boolean;
   createdAt: Date;
   reaction: chatReaction[];
 }
@@ -70,6 +72,10 @@ export interface reactionJob {
   messageId: string;
   reactionType: string;
   senderName: string;
+}
+
+export interface deliveredJob {
+  userId: string;
 }
 
 export interface chatList {

@@ -39,16 +39,16 @@ class Router {
     this.router.get('/posts', Middlewares.validateToken, Middlewares.currentUserCheck, get.posts);
     this.router.get('/posts/auth/:authId', Middlewares.validateToken, Middlewares.currentUserCheck, get.postsByAuthId);
     this.router.get(
-      '/posts/:authId/image',
+      '/posts/:userId/image',
       Middlewares.validateToken,
       Middlewares.currentUserCheck,
-      get.postsWithImageByAuthId
+      get.postsWithImageByUserId
     );
     this.router.get(
-      '/posts/:authId/video',
+      '/posts/:userId/video',
       Middlewares.validateToken,
       Middlewares.currentUserCheck,
-      get.postsWithVideosByAuthId
+      get.postsWithVideosByUserId
     );
     this.router.get('/posts/:postId', Middlewares.validateToken, Middlewares.currentUserCheck, get.postsWithId);
 

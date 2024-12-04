@@ -11,8 +11,8 @@ import mongoose from 'mongoose';
 
 export class ReactionService {
   static async addReactionDb(data: reactionAttrs) {
-    const { postId, authId, reactionType, userFrom, userTo, userName } = data;
-    const reaction = await reactionModel.findOne({ postId, authId });
+    const { postId, userId, reactionType, userFrom, userTo, userName } = data;
+    const reaction = await reactionModel.findOne({ postId, userId });
     const user = await userCache.getUser(userTo);
 
     if (reaction) return this.updateReactionDb(reaction._id, data);
@@ -50,7 +50,7 @@ export class ReactionService {
   }
 
   static async updateReactionDb(reactionId: string | mongoose.Types.ObjectId, data: reactionAttrs) {
-    const { reactionType, postId, authId } = data;
+    const { reactionType, postId, userId } = data;
     const reaction = (await reactionModel.findById(reactionId)) as reactionDoc;
     const prevReaction = reaction.reactionType;
 
@@ -64,7 +64,7 @@ export class ReactionService {
       return;
     }
 
-    await reactionModel.findOneAndUpdate({ postId, authId }, { reactionType });
+    await reactionModel.findOneAndUpdate({ postId, userId }, { reactionType });
     await postModel.findByIdAndUpdate(postId, {
       $inc: { [`reactions.${reactionType}`]: 1, [`reactions.${prevReaction}`]: -1 },
     });
@@ -74,5 +74,10 @@ export class ReactionService {
     const reactions = await reactionModel.find({ postId }).skip(skip).limit(limit);
     if (!reactions) throw new NotFoundError(`No reaction found`);
     return reactions;
+  }
+
+  static async checkReactionExist(postId: string, userId: string): Promise<reactionDoc | null> {
+    const reaction = await reactionModel.findOne({ postId, userId });
+    return reaction;
   }
 }

@@ -51,6 +51,13 @@ class Router {
       get.userFollowees
     );
 
+    this.router.get(
+      '/users/:userId/followee/:checkingUserId',
+      Middlewares.validateToken,
+      Middlewares.currentUserCheck,
+      get.checkUserFollows
+    );
+
     return this.router;
   }
 }

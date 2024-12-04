@@ -56,15 +56,14 @@ export class Signup {
     await userCache.addUser(userData);
 
     // token generation and adding to session
-    const token = AuthService.signToken({ userName, email, _id: userId, avatarImage, authId });
-
+    const token = AuthService.signToken({ userName, email, _id: userId, avatarColor, authId });
     req.session = { token };
 
     // saving to db
     new AuthWorker().saveToDb(Signup.prototype.authData(req, authId));
     new SignupWorker().saveToDb(Signup.prototype.userData(authId, userId, userName));
 
-    res.status(httpStatus.CREATED).json({ message: 'success', user: userData });
+    res.status(httpStatus.CREATED).json({ message: 'success', user: userData, token });
   }
 
   private redisUserData(authObj: authAttrs): redisUserAttrs {

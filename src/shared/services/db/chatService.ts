@@ -28,7 +28,7 @@ export class ChatService {
   }
 
   static async markMessageSeen(conversationId: string): Promise<chatDoc[]> {
-    const chats = await chatModel.find({ isRead: false });
+    const chats = await chatModel.find({ isRead: false, conversationId });
     await chatModel.updateMany({ conversationId, isRead: false }, { $set: { isRead: true } }, { runValidators: true });
 
     return chats.map((chat) => {
@@ -38,10 +38,21 @@ export class ChatService {
     });
   }
 
+  static async markMessageAsDelivered(userId: string): Promise<chatDoc[]> {
+    const chats = await chatModel.find({ reciverId: userId, isDelivered: false });
+    await chatModel.updateMany({ reciverId: userId, isDelivered: false }, { $set: { isDelivered: true } });
+
+    return chats.map((chat) => {
+      const plainChat = chat.toObject();
+      plainChat.isDelivered = true;
+      return plainChat;
+    });
+  }
+
   static async markMessageDeleted(messageId: string, type: deleteType) {
     if (type === 'deleteForme')
       await chatModel.findByIdAndUpdate(messageId, { deleteForMe: true }, { runValidators: true, new: true });
-    else await chatModel.findByIdAndUpdate(messageId, { deleteForEveryone: true }, { new: true });
+    else await chatModel.findByIdAndUpdate(messageId, { deleteForEveryone: true, deleteForMe: true }, { new: true });
   }
 
   static async addReaction(messageId: string, reactionType: string, senderName: string) {
@@ -58,8 +69,16 @@ export class ChatService {
     return await chatModel.find({ conversationId });
   }
 
+  static async getChatV2(senderId: string, reciverId: string): Promise<chatDoc[]> {
+    return await chatModel.find({
+      $or: [
+        { senderId, reciverId },
+        { reciverId: senderId, senderId: reciverId },
+      ],
+    });
+  }
+
   static async getConversationList(senderId: string): Promise<chatDoc[]> {
-    console.log(senderId, 'sender');
     const chatList: chatDoc[] = [];
     const conversationList = await conversationModel.find({
       $or: [{ senderId: senderId }, { receiverId: senderId }],

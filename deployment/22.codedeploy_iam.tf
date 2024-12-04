@@ -22,7 +22,7 @@ resource "aws_iam_role" "codedeploy_iam_role" {
 
 
 resource "aws_iam_policy" "codedeploy_policy" {
-  name        = "codedeploy-policy"
+  name = "codedeploy-policy"
 
   policy = jsonencode({
     Version = "2012-10-17"

@@ -30,9 +30,9 @@ export class AuthService {
   }
 
   static signToken(authData: authPayload): string {
-    const { _id, userName, avatarImage, email, authId } = authData;
+    const { _id, userName, avatarColor, email, authId } = authData;
 
-    return jwt.sign({ _id, userName, avatarImage, email, authId }, config.JWT_SECRET!);
+    return jwt.sign({ _id, userName, avatarColor, email, authId }, config.JWT_SECRET!);
   }
 
   static async getAuthByEmail(email: string): Promise<authDoc | null> {

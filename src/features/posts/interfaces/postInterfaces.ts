@@ -8,8 +8,10 @@ export interface postDoc extends mongoose.Document {
   content: string;
   totalReaction: number;
   profilePic: string;
+  username: string;
   email: string;
   authId: string;
+  userId: string | mongoose.Types.ObjectId;
   totalComments: number;
   reactions: reactions;
   gifUrl: string;
@@ -28,8 +30,10 @@ export interface postAttrs {
   content: string;
   totalReaction: number;
   profilePic: string;
+  username: string;
   email: string;
   authId: string | mongoose.Types.ObjectId;
+  userId: string | mongoose.Types.ObjectId;
   totalComments: number;
   reactions: reactions;
   gifUrl: string;
@@ -46,7 +50,7 @@ export interface postAttrs {
 export enum privacyEnum {
   PUBLIC = 'public',
   PRIVATE = 'private',
-  UNLISTED = 'unlisted',
+  FOLLOWERS = 'followers',
 }
 
 export interface comments {
@@ -90,6 +94,7 @@ export interface postUpdationProps {
   privacy: privacyEnum;
   gifUrl: string;
   profilePic: string;
+  username: string;
 }
 
 export interface postWithImageUpdationProps {
@@ -108,6 +113,7 @@ export interface postWithImageUpdationProps {
   reactions?: reactions;
   totalReaction?: number;
   totalComments?: number;
+  username?: string;
 }
 
 export interface reqWithPostUpdationProps extends Request {
@@ -137,7 +143,7 @@ export interface reqForGetAllPostsProps extends Request {
 
 export interface reqForGetPostByAuthId extends Request {
   params: {
-    authId: string;
+    userId: string;
   };
 
   query: {
@@ -147,7 +153,7 @@ export interface reqForGetPostByAuthId extends Request {
 
 export interface reqForGetPostImgByAuthId extends Request {
   params: {
-    authId: string;
+    userId: string;
   };
 
   query: {

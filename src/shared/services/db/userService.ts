@@ -81,14 +81,16 @@ export class UserService {
     await userModel.findByIdAndUpdate(userId, { $set: { 'userSetting.notificationSettings': notification } });
   }
 
-  static async searchUsers(userName: string) {
+  static async searchUsers(
+    userName: string
+  ): Promise<{ _id: string; userName: string; profileImg: string; email: string }[]> {
     const authUsers = await authModel.aggregate([
       { $match: { userName: { $regex: `^${userName}[^a-zA-Z0-9]*`, $options: 'i' } } },
       { $lookup: { from: 'users', localField: '_id', foreignField: 'authId', as: 'user' } },
       { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
       {
         $project: {
-          _id: 0,
+          _id: '$user._id',
           userName: 1,
           profileImg: '$user.profileImg',
           email: 1,

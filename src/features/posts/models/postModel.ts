@@ -16,11 +16,21 @@ const postSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  username: String,
   email: String,
+  text: String,
 
   authId: {
+    required: true,
     type: mongoose.Types.ObjectId,
     ref: 'Auth',
+    index: true,
+  },
+
+  userId: {
+    required: true,
+    type: mongoose.Types.ObjectId,
+    ref: 'User',
     index: true,
   },
 
@@ -32,7 +42,8 @@ const postSchema = new mongoose.Schema({
   reactions: {
     like: { type: Number, default: 0 },
     sad: { type: Number, default: 0 },
-    laugh: { type: Number, default: 0 },
+    happy: { type: Number, default: 0 },
+    love: { type: Number, default: 0 },
     wow: { type: Number, default: 0 },
     angry: { type: Number, default: 0 },
   },

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import httpStatus from 'http-status-codes';
 import { ReactionService } from '@services/db/reactionService';
 import { reactionCache } from '@services/redis/reactionCache';
-import { reqForGettingReactions } from '@reaction/interfaces/reactionInterface';
+import { reqForCheckingReactionsExist, reqForGettingReactions } from '@reaction/interfaces/reactionInterface';
 import { Helpers } from '@global/helpers/helpers';
 
 class Get {
@@ -18,6 +18,15 @@ class Get {
       : await ReactionService.getReactionByPostId(postId, skip, limit);
 
     res.status(httpStatus.OK).json({ reactions });
+  }
+
+  async checkReactionExist(req: reqForCheckingReactionsExist, res: Response) {
+    const { userId, postId } = req.params;
+
+    const reactionDataCache = await reactionCache.getReaction(postId, userId);
+    const reaction = reactionCache ? reactionDataCache : await ReactionService.checkReactionExist(postId, userId);
+
+    res.status(httpStatus.OK).json({ reaction });
   }
 }
 

@@ -6,6 +6,7 @@ import { chatCache } from '@services/redis/chatCache';
 import { ChatWorker } from '@workers/chatWorker';
 import { reqForMessageDeletion } from '@chat/interfaces/chatInterface';
 import { reactionType } from '@reaction/interfaces/reactionInterface';
+import { chatSocket } from '@utils/features/sockets/chatSocket';
 
 class Update {
   async markMessageAsSeen(req: Request, res: Response) {
@@ -19,12 +20,23 @@ class Update {
     res.status(httpStatus.OK).json({ message: 'Updated  message', chat: updatedMessage });
   }
 
+  async markMessageAsDelivered(req: Request, res: Response) {
+    const { userId } = req.params as { userId: string };
+    await chatCache.markMessageAsDelivered(userId);
+
+    const chatWorker = await new ChatWorker().prepareQueueForChatDelivered({ userId });
+    chatWorker.deliveredChat();
+
+    res.status(httpStatus.OK).json({ message: 'OK' });
+  }
+
   async markMessageAsDeleted(req: reqForMessageDeletion, res: Response) {
     const { type } = req.body;
     const { messageId, conversationId } = req.params as { messageId: string; conversationId: string };
 
     const chats = await chatCache.markMessageAsDeleted(conversationId, messageId, type);
 
+    chatSocket.emit('delete message', chats, { senderId: chats[0].senderId, reciverId: chats[0].reciverId });
     const chatWorker = await new ChatWorker().prepareQueueForDeletion({ messageId, type });
     chatWorker.deleteChat();
 

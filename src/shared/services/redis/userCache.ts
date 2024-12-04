@@ -43,7 +43,7 @@ export class UserCache extends BaseCache {
     posts: [] | postAttrs[];
   }> {
     const user = await this.getUser(userId);
-    const posts = await postCache.getPostsByAuthId(authId, skip, limit);
+    const posts = await postCache.getPostsByUserId(userId, skip, limit);
 
     return { user, posts };
   }

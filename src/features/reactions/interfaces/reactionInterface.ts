@@ -6,7 +6,7 @@ export interface reactionAttrs {
   profilePic: string;
   userName: string;
   postId: string | mongoose.Types.ObjectId;
-  authId: string | mongoose.Types.ObjectId;
+  userId: string | mongoose.Types.ObjectId;
   userFrom: string | mongoose.Types.ObjectId;
   userTo: string | mongoose.Types.ObjectId;
   reactionType: reactionType;
@@ -18,7 +18,7 @@ export interface reactionDoc extends mongoose.Document {
   profilePic: string;
   userName: string;
   postId: string | mongoose.Types.ObjectId;
-  authId: string | mongoose.Types.ObjectId;
+  userId: string | mongoose.Types.ObjectId;
   userFrom: string | mongoose.Types.ObjectId;
   userTo: string | mongoose.Types.ObjectId;
   reactionType: reactionType;
@@ -28,7 +28,8 @@ export interface reactionDoc extends mongoose.Document {
 export interface reactions {
   like: number;
   sad: number;
-  laugh: number;
+  happy: number;
+  love: number;
   wow: number;
   angry: number;
 }
@@ -36,7 +37,8 @@ export interface reactions {
 export enum reactionType {
   like = 'like',
   sad = 'sad',
-  laugh = 'laugh',
+  love = 'love',
+  happy = 'happy',
   wow = 'wow',
   angry = 'angry',
 }
@@ -62,9 +64,16 @@ export interface reqForGettingReactions extends Request {
   };
 }
 
+export interface reqForCheckingReactionsExist extends Request {
+  params: {
+    userId: string;
+    postId: string;
+  };
+}
+
 // export interface reqForGettingUserReaction {
 //   params: {
-//     authId: string;
+//     userId: string;
 //   };
 //   query: {
 //     page?: string;

@@ -9,6 +9,12 @@ class Router {
   private router = expressRouter();
   routes(): expressRouter {
     this.router.get('/post/reactions/:postId', Middlewares.validateToken, Middlewares.currentUserCheck, get.reaction);
+    this.router.get(
+      '/post/reactions/:postId/:userId',
+      Middlewares.validateToken,
+      Middlewares.currentUserCheck,
+      get.checkReactionExist
+    );
     this.router.post(
       '/posts/reaction',
       Middlewares.validateToken,
