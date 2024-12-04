@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket  = "link-loop"
-    key     = "development/terraform.tfstate"
+    key     = "stagging/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
   }
