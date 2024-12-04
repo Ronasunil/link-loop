@@ -8,20 +8,21 @@ class PostCache extends BaseCache {
     super();
   }
   async addPost(data: postAttrs): Promise<void> {
-    const { _id: postId, authId } = data;
+    const { _id: postId, userId } = data;
+
     const postData = JSON.stringify(data);
     await this.client.set(`post:${postId}`, postData);
 
-    // add postId with associated authId
-    await this.client.sadd(`auth:${authId}`, `post:${postId}`);
+    // add postId with associated userId
+    await this.client.sadd(`userPosts:${userId}`, `post:${postId}`);
 
     // add all postIds
     await this.client.sadd('postIds', `post:${postId}`);
   }
 
-  async getPostsByAuthId(authId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
+  async getPostsByUserId(userId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
     const posts: postAttrs[] = [];
-    const postKeys = (await this.client.smembers(`auth:${authId}`)).slice(skip, limit);
+    const postKeys = (await this.client.smembers(`userPosts:${userId}`)).slice(skip, limit);
 
     if (!postKeys.length) return [];
 
@@ -35,10 +36,10 @@ class PostCache extends BaseCache {
     return posts;
   }
 
-  async getPostVideosByAuthId(authId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
+  async getPostVideosByUserId(userId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
     const posts: postAttrs[] = [];
 
-    const postKeys = (await this.client.smembers(`auth:${authId}`)).slice(skip, limit);
+    const postKeys = (await this.client.smembers(`userPosts:${userId}`)).slice(skip, limit);
     if (!postKeys.length) return posts;
 
     for (const key of postKeys) {
@@ -53,10 +54,10 @@ class PostCache extends BaseCache {
     return posts;
   }
 
-  async getPostImagesByAuthId(authId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
+  async getPostImagesByUserId(userId: string, skip: number, limit: number): Promise<postAttrs[] | []> {
     const posts: postAttrs[] = [];
 
-    const postKeys = await this.client.smembers(`auth:${authId}`);
+    const postKeys = await this.client.smembers(`userPosts:${userId}`);
 
     if (!postKeys.length) return [];
 
@@ -95,14 +96,16 @@ class PostCache extends BaseCache {
     return posts.slice(skip, limit);
   }
 
-  async getUsersPost(authId: string): Promise<string[]> {
-    const userPosts = await this.client.smembers(`auth:${authId}`);
+  async getUsersPost(userId: string): Promise<string[]> {
+    const userPosts = await this.client.smembers(`userPosts:${userId}`);
     return userPosts;
   }
 
-  async deletePost(postId: string, authId: string): Promise<void> {
-    await this.client.srem(`auth:${authId}`, `post:${postId}`);
-    await this.client.srem('postsIds', `post:${postId}`);
+  async deletePost(postId: string, userId: string): Promise<void> {
+    await this.client.srem(`user:${userId}`, `post:${postId}`);
+    await this.client.srem('postIds', `post:${postId}`);
+
+    await this.client.del(`post:${postId}`);
   }
 
   async updatePost(postId: string, data: postWithImageUpdationProps): Promise<postAttrs> {
@@ -111,7 +114,7 @@ class PostCache extends BaseCache {
     if (!post) throw new BadRequestError(`Can't find item`);
 
     const updatedData = JSON.stringify({ ...post, ...data });
-    console.log(data);
+
     await this.client.set(`post:${postId}`, updatedData);
 
     return JSON.parse(updatedData) as postAttrs;

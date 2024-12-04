@@ -32,6 +32,7 @@ export class PostService {
   }
 
   static async deletePostsDb(postId: string): Promise<void> {
+    console.log('lp');
     await postModel.findByIdAndDelete(postId);
   }
 

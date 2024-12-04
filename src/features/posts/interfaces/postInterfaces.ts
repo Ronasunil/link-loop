@@ -50,7 +50,7 @@ export interface postAttrs {
 export enum privacyEnum {
   PUBLIC = 'public',
   PRIVATE = 'private',
-  UNLISTED = 'unlisted',
+  FOLLOWERS = 'followers',
 }
 
 export interface comments {
@@ -143,7 +143,7 @@ export interface reqForGetAllPostsProps extends Request {
 
 export interface reqForGetPostByAuthId extends Request {
   params: {
-    authId: string;
+    userId: string;
   };
 
   query: {
@@ -153,7 +153,7 @@ export interface reqForGetPostByAuthId extends Request {
 
 export interface reqForGetPostImgByAuthId extends Request {
   params: {
-    authId: string;
+    userId: string;
   };
 
   query: {

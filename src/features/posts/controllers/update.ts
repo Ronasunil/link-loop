@@ -18,7 +18,7 @@ class Update {
     const updatedData = await Update.prototype.getUpdatedData(req);
 
     const updatedPost = await postCache.updatePost(postId, updatedData);
-    postSocketIo.emit('post-updated', updatedPost);
+    postSocketIo.emit('post updated', updatedPost);
     const postworker = await new PostWorker().prepareQueueForUpdation(updatedData);
     postworker.updatePost(postId);
 

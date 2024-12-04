@@ -1,6 +1,6 @@
 import { ChatService } from '@services/db/chatService';
 import { ChatQueue } from '@services/queue/chatQueue';
-import { chatAttrs, deleteJob, reactionJob } from '@utils/features/chat/interfaces/chatInterface';
+import { chatAttrs, deleteJob, deliveredJob, reactionJob } from '@utils/features/chat/interfaces/chatInterface';
 import { Job } from 'bullmq';
 
 export class ChatWorker {
@@ -8,9 +8,15 @@ export class ChatWorker {
   private chatUpdationQueue = new ChatQueue('chatUpdationQueue');
   private chatDeletionQueue = new ChatQueue('chatDeletionQueue');
   private chatReactionQueue = new ChatQueue('chatReactionQueue');
+  private chatDeliveredQueue = new ChatQueue('chatDeliveredQeue');
 
   async prepareQueueForChatCreation(data: chatAttrs): Promise<this> {
     await this.chatQueue.addToQueue(data);
+    return this;
+  }
+
+  async prepareQueueForChatDelivered(data: deliveredJob): Promise<this> {
+    this.chatDeliveredQueue.addToQueue(data);
     return this;
   }
 
@@ -31,6 +37,10 @@ export class ChatWorker {
 
   deleteChat() {
     this.chatDeletionQueue.processQueue(this.deleteChatFn);
+  }
+
+  deliveredChat() {
+    this.chatDeliveredQueue.processQueue(this.deliveredChatfn);
   }
 
   updateChat() {
@@ -60,6 +70,11 @@ export class ChatWorker {
     const { messageId, type } = job.data as deleteJob;
 
     await ChatService.markMessageDeleted(messageId, type);
+  }
+
+  private async deliveredChatfn(job: Job) {
+    const { userId } = job.data as deliveredJob;
+    await ChatService.markMessageAsDelivered(userId);
   }
 
   private async addReactionFn(job: Job) {

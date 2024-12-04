@@ -35,6 +35,14 @@ class Get {
 
     res.status(httpStatus.OK).json({ followees });
   }
+
+  async checkUserFollows(req: Request, res: Response) {
+    const { userId, checkingUserId } = req.params as { userId: string; checkingUserId: string };
+
+    const result = await followerCache.checkUserFollowing(userId, checkingUserId);
+
+    res.status(httpStatus.OK).json({ result });
+  }
 }
 
 export const get = new Get();

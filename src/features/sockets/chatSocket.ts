@@ -16,6 +16,7 @@ export class ChatSocket {
         const senderSocketId = userMap[senderName];
         const reciverSocketId = userMap[reciverName];
 
+        if (!reciverSocketId) return socket.emit('user offline', { message: 'user is offline' });
         socket.join(senderSocketId);
         socket.join(reciverSocketId);
       });

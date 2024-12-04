@@ -70,6 +70,10 @@ const chatSchema = new mongoose.Schema({
     type: Boolean,
   },
 
+  isDelivered: {
+    type: Boolean,
+  },
+
   createdAt: {
     type: Date,
     default: new Date(),

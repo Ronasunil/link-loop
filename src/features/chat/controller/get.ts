@@ -24,6 +24,13 @@ class Get {
 
     res.status(httpStatus.OK).json({ message: 'Chats', chat });
   }
+
+  async chatBySendAndReciverId(req: Request, res: Response) {
+    const { senderId, reciverId } = req.params;
+    const chats = await ChatService.getChatV2(senderId, reciverId);
+
+    res.status(httpStatus.OK).json({ message: 'Chats', chats });
+  }
 }
 
 export const get = new Get();
